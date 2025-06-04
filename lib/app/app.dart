@@ -1,3 +1,5 @@
+import 'package:crafty_bay/app/app_routes.dart';
+import 'package:crafty_bay/app/app_theme.dart';
 import 'package:crafty_bay/features/auth/ui/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +14,10 @@ class _CraftyBayState extends State<CraftyBay> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: SplashScreen.name,
-      routes: {SplashScreen.name: (context) => SplashScreen()},
+      theme: AppTheme.lightThemeData,
+      onGenerateRoute: AppRoutes.routes,
     );
   }
 }
