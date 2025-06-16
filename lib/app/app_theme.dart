@@ -16,13 +16,33 @@ class AppTheme {
         enabledBorder: _getInputBorder(AppColor.themeColor),
         focusedBorder: _getInputBorder(AppColor.themeColor),
         errorBorder: _getInputBorder(Colors.red),
+        hintStyle: TextStyle(
+          fontWeight: FontWeight.w400,
+          color: Colors.grey,
+        )
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+            fixedSize: Size.fromWidth(double.maxFinite),
+            backgroundColor: AppColor.themeColor,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 12),
+            textStyle: TextStyle(
+              fontSize: 16,
+              letterSpacing: 0.4,
+              fontWeight: FontWeight.w500,
+            )
+        ),
+      )
     );
   }
 
   static OutlineInputBorder _getInputBorder(Color color){
     return OutlineInputBorder(
-      borderSide: BorderSide(color: color),
+      borderSide: BorderSide(color: color, width: 1.2,),
     );
   }
 
