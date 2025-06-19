@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/app_colors.dart';
+import '../../../../app/app_colors.dart';
 
 class ProductCategoryItem extends StatelessWidget {
   const ProductCategoryItem({

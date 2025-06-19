@@ -1,3 +1,4 @@
+import 'package:crafty_bay/features/common/ui/widgets/product_category_item.dart';
 import 'package:flutter/material.dart';
 
 class ProductCategoryScreen extends StatefulWidget {
@@ -12,6 +13,15 @@ class ProductCategoryScreen extends StatefulWidget {
 class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(title: Text('Categories')),
+      body: GridView.builder(
+        itemCount: 50,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+        itemBuilder: (context, index) {
+          return ProductCategoryItem();
+        },
+      ),
+    );
   }
 }
