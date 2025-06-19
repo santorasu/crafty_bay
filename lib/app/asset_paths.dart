@@ -1,5 +1,5 @@
 class AssetPaths{
-  static const String _imageUrl = 'asset/images';
-  static const String appLogoSvg = 'asset/logo.svg';
-  static const String navAppLogoSvg = 'asset/logo_nav.svg';
+  static const String _imageUrl = 'assets/images';
+  static const String appLogoSvg = '$_imageUrl/logo.svg';
+  static const String navAppLogoSvg = '$_imageUrl/logo_nav.svg';
 }
