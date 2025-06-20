@@ -36,6 +36,12 @@ class AppTheme {
               fontWeight: FontWeight.w500,
             )
         ),
+      ),
+      appBarTheme: AppBarTheme(
+        titleTextStyle: TextStyle(
+          fontSize: 18,
+          color: Colors.black87,
+        ),
       )
     );
   }

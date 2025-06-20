@@ -1,7 +1,10 @@
+import 'package:crafty_bay/app/app_colors.dart';
 import 'package:crafty_bay/app/asset_paths.dart';
-import 'package:crafty_bay/features/products/ui/screens/product_category_screen.dart';
+import 'package:crafty_bay/features/common/ui/controllers/main_bottom_nav_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import '../../../common/ui/widgets/product_card.dart';
 import '../../widgets/app_bar_icon_button.dart';
 import '../../widgets/home_carousel_slider.dart';
 import '../../../common/ui/widgets/product_category_item.dart';
@@ -9,8 +12,6 @@ import '../../widgets/product_search_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
-  static final String name = '/home';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -32,11 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 16),
                 HomeCarouselSlider(),
                 const SizedBox(height: 16),
-                _buildSectionHeader(title: 'Categories', onTapSeeAll: () {
-                  Navigator.pushNamed(context, ProductCategoryScreen.name);
-                }),
+                _buildSectionHeader(
+                  title: 'Categories',
+                  onTapSeeAll: () {
+                    Get.find<MainBottomNavController>().moveToCategory();
+                  },
+                ),
                 _getCategoryList(),
                 _buildSectionHeader(title: 'Popular', onTapSeeAll: () {}),
+                _getPopularProducts(),
                 _buildSectionHeader(title: 'Special', onTapSeeAll: () {}),
                 _buildSectionHeader(title: 'New', onTapSeeAll: () {}),
               ],
@@ -44,6 +49,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _getPopularProducts() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: [1, 2, 3, 4].map((e) => ProductCard()).toList()),
     );
   }
 
@@ -85,5 +97,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
