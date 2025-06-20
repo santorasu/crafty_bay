@@ -10,12 +10,13 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 140,
+      margin: EdgeInsets.all(2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: AppColor.themeColor.withOpacity(0.1),
+            color: AppColor.themeColor.withOpacity(0.2),
             offset: Offset(0.0, 0.7),
             blurRadius: 5,
           ),
