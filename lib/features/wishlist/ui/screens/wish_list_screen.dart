@@ -43,5 +43,7 @@ class _WishListScreenState extends State<WishListScreen> {
     );
   }
 
-  void _backToHome (){}
+  void _backToHome (){
+    Get.find<MainBottomNavController>().backToHome();
+  }
 }

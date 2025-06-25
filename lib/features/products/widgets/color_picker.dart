@@ -37,7 +37,10 @@ class _ColorPickerState extends State<ColorPicker> {
                 border: Border.all(color: Colors.grey),
                 color: _selectedColor == color ? AppColor.themeColor : null,
               ),
-              child: Text(color),
+              child: Text(color,style: TextStyle(
+                color: _selectedColor == color ? Colors.white : null,
+                fontWeight: FontWeight.w500,
+              ),),
             ),
           ),
       ],

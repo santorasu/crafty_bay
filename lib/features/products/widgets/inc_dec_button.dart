@@ -2,9 +2,9 @@ import 'package:crafty_bay/app/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class IncDecButton extends StatefulWidget {
-  const IncDecButton({super.key, required this.onChanged});
+  const IncDecButton({super.key, required this.onChange});
 
-  final Function(int) onChanged;
+  final Function(int) onChange;
 
   @override
   State<IncDecButton> createState() => _IncDecButtonState();
@@ -12,16 +12,17 @@ class IncDecButton extends StatefulWidget {
 
 class _IncDecButtonState extends State<IncDecButton> {
   int value = 1;
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        buildIconButton(
+        _buildIconButton(
           onTap: () {
             if (value <= 1) return;
-              value--;
+            value--;
             setState(() {});
-            widget.onChanged(value);
+            widget.onChange(value);
           },
           icon: Icons.remove,
         ),
@@ -29,11 +30,12 @@ class _IncDecButtonState extends State<IncDecButton> {
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Text('$value', style: TextStyle(fontSize: 18)),
         ),
-        buildIconButton(
+        _buildIconButton(
           onTap: () {
             if (value >= 20) return;
             value++;
             setState(() {});
+            widget.onChange(value);
           },
           icon: Icons.add,
         ),
@@ -41,7 +43,7 @@ class _IncDecButtonState extends State<IncDecButton> {
     );
   }
 
-  Widget buildIconButton({
+  Widget _buildIconButton({
     required VoidCallback onTap,
     required IconData icon,
   }) {
