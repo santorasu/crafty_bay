@@ -1,20 +1,21 @@
 import 'package:crafty_bay/app/app_colors.dart';
+import 'package:crafty_bay/app/constants.dart';
 import 'package:crafty_bay/features/products/widgets/color_picker.dart';
 import 'package:crafty_bay/features/products/widgets/inc_dec_button.dart';
 import 'package:crafty_bay/features/products/widgets/product_image_slider.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../app/constants.dart';
-
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key, required this.productId});
 
   static const String name = '/product-details';
+
   final String productId;
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
+
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
@@ -37,7 +38,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           children: [
                             Expanded(
                               child: Text(
-                                'Nike 1284HST - new shoe of 2025',
+                                'Nike 1204HST - new shoe of 2025',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
@@ -46,15 +47,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 ),
                               ),
                             ),
-                            IncDecButton(onChanged: (int value) {}),
+                            IncDecButton(onChange: (int value) {}),
                           ],
                         ),
-
                         Row(
                           children: [
                             Wrap(
                               children: [
-                                Icon(Icons.star, color: Colors.amber, size: 18),
+                                Icon(Icons.star, size: 18, color: Colors.amber),
                                 Text(
                                   '4.5',
                                   style: TextStyle(color: Colors.grey),
@@ -81,7 +81,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ],
                         ),
-
                         Text(
                           'Color',
                           style: TextStyle(
@@ -89,13 +88,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         ColorPicker(
-                          colors: ['Black', 'Blue', 'Red', 'Green', 'Yellow', 'Pink'],
+                          colors: ['Black', 'Blue', 'Pink', 'White', 'Yellow'],
                           onSelected: (String value) {},
                         ),
-                        SizedBox(height: 16),
-
+                        const SizedBox(height: 16),
                         Text(
                           'Size',
                           style: TextStyle(
@@ -103,12 +101,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         ColorPicker(
-                          colors: ['S', 'M', 'L', 'XL', 'XXL',],
+                          colors: ['S', 'M', 'L', 'XL', 'XXL'],
                           onSelected: (String value) {},
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Text(
                           'Description',
                           style: TextStyle(
@@ -116,8 +114,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(height: 8),
-                        Text('')
+                        const SizedBox(height: 8),
+                        Text(
+                          '''Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.''',
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       ],
                     ),
                   ),
@@ -125,13 +126,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ),
           ),
-          buildPriceAddToCartSection(),
+          _buildPriceAndAddToCartSection(),
         ],
       ),
     );
   }
 
-  Widget buildPriceAddToCartSection() {
+  Widget _buildPriceAndAddToCartSection() {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(

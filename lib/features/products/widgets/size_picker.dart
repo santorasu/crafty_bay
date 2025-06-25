@@ -37,7 +37,10 @@ class _SizePickerState extends State<SizePicker> {
                 border: Border.all(color: Colors.grey),
                 color: _selectedSize == size ? AppColor.themeColor : null,
               ),
-              child: Text(size),
+              child: Text(size,style: TextStyle(
+                color: _selectedSize == size ? Colors.white : null,
+                fontWeight: FontWeight.w500,
+              ),),
             ),
           ),
       ],
