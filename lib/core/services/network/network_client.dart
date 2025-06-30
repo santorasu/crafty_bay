@@ -23,24 +23,27 @@ class NetworkClient {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: true,
           statusCode: response.statusCode,
           responseData: responseBody,
         );
       } else if (response.statusCode == 401) {
         onUnAuthorize();
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
           errorMessage: 'Unauthorized',
         );
       } else {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
-          responseData: responseBody['message'] ?? _defaultErrorMessage,
+          responseData: responseBody['msg'] ?? _defaultErrorMessage,
         );
       }
     } on Exception catch (e) {
-      return NetworkResponse(statusCode: -1, errorMessage: e.toString());
+      return NetworkResponse(isSuccess: false, statusCode: -1, errorMessage: e.toString());
     }
   }
 
@@ -60,31 +63,38 @@ class NetworkClient {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: true,
           statusCode: response.statusCode,
           responseData: responseBody,
         );
       } else if (response.statusCode == 401) {
         onUnAuthorize();
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
           errorMessage: 'Unauthorized',
         );
       } else {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
-          responseData: responseBody['message'] ?? _defaultErrorMessage,
+          responseData: responseBody['msg'] ?? _defaultErrorMessage,
         );
       }
     } on Exception catch (e) {
-      return NetworkResponse(statusCode: -1, errorMessage: e.toString());
+      return NetworkResponse(
+        isSuccess: false,
+        statusCode: -1,
+        errorMessage: e.toString(),
+      );
     }
   }
 
   Future<NetworkResponse> putRequest(
-      String url, {
-        Map<String, dynamic>? body,
-      }) async {
+    String url, {
+    Map<String, dynamic>? body,
+  }) async {
     try {
       Uri uri = Uri.parse(url);
       _logRequest(url, headers: commonHeaders); // Log the request
@@ -97,32 +107,38 @@ class NetworkClient {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: true,
           statusCode: response.statusCode,
           responseData: responseBody,
         );
       } else if (response.statusCode == 401) {
         onUnAuthorize();
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
           errorMessage: 'Unauthorized',
         );
       } else {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
-          responseData: responseBody['message'] ?? _defaultErrorMessage,
+          responseData: responseBody['msg'] ?? _defaultErrorMessage,
         );
       }
     } on Exception catch (e) {
-      return NetworkResponse(statusCode: -1, errorMessage: e.toString());
+      return NetworkResponse(
+        isSuccess: false,
+        statusCode: -1,
+        errorMessage: e.toString(),
+      );
     }
   }
 
-
   Future<NetworkResponse> patchRequest(
-      String url, {
-        Map<String, dynamic>? body,
-      }) async {
+    String url, {
+    Map<String, dynamic>? body,
+  }) async {
     try {
       Uri uri = Uri.parse(url);
       _logRequest(url, headers: commonHeaders); // Log the request
@@ -135,31 +151,38 @@ class NetworkClient {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: true,
           statusCode: response.statusCode,
           responseData: responseBody,
         );
       } else if (response.statusCode == 401) {
         onUnAuthorize();
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
           errorMessage: 'Unauthorized',
         );
       } else {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
-          responseData: responseBody['message'] ?? _defaultErrorMessage,
+          responseData: responseBody['msg'] ?? _defaultErrorMessage,
         );
       }
     } on Exception catch (e) {
-      return NetworkResponse(statusCode: -1, errorMessage: e.toString());
+      return NetworkResponse(
+        isSuccess: false,
+        statusCode: -1,
+        errorMessage: e.toString(),
+      );
     }
   }
 
   Future<NetworkResponse> deleteRequest(
-      String url, {
-        Map<String, dynamic>? body,
-      }) async {
+    String url, {
+    Map<String, dynamic>? body,
+  }) async {
     try {
       Uri uri = Uri.parse(url);
       _logRequest(url, headers: commonHeaders); // Log the request
@@ -172,24 +195,31 @@ class NetworkClient {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: true,
           statusCode: response.statusCode,
           responseData: responseBody,
         );
       } else if (response.statusCode == 401) {
         onUnAuthorize();
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
           errorMessage: 'Unauthorized',
         );
       } else {
         final responseBody = jsonDecode(response.body);
         return NetworkResponse(
+          isSuccess: false,
           statusCode: response.statusCode,
-          responseData: responseBody['message'] ?? _defaultErrorMessage,
+          responseData: responseBody['msg'] ?? _defaultErrorMessage,
         );
       }
     } on Exception catch (e) {
-      return NetworkResponse(statusCode: -1, errorMessage: e.toString());
+      return NetworkResponse(
+        isSuccess: false,
+        statusCode: -1,
+        errorMessage: e.toString(),
+      );
     }
   }
 
