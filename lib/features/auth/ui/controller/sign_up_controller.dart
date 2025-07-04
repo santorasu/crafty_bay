@@ -21,10 +21,11 @@ class SignUpController extends GetxController {
     final NetworkResponse response = await Get.find<NetworkClient>()
         .postRequest(Urls.signUpUrl, body: model.toJson());
     if (response.isSuccess) {
-      isSuccess = true;
       _message = response.responseData!['msg'];
+      isSuccess = true;
+      _errorMessage = null;
     } else {
-      _message = response.errorMessage!;
+      _errorMessage = response.errorMessage!;
     }
 
     _inProgress = false;

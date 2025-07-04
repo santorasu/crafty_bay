@@ -7,8 +7,8 @@ class NetworkResponse {
   final bool isSuccess;
 
   NetworkResponse({
-    required this.statusCode,
     required this.isSuccess,
+    required this.statusCode,
     this.responseData,
     this.errorMessage,
   });
