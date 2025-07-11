@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         spacing: 8,
-        children: [1, 2, 3, 4].map((e) => ProductCard()).toList(),
+        // children: [1, 2, 3, 4].map((e) => ProductCard()).toList(),
       ),
     );
   }
@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return ProductCard();
+        //  return ProductCard();
         },
         separatorBuilder: (context, index) {
           return SizedBox(width: 8);
@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         spacing: 8,
-        children: [1, 2, 3, 4].map((e) => ProductCard()).toList(),
+       // children: [1, 2, 3, 4].map((e) => ProductCard()).toList(),
       ),
     );
   }
