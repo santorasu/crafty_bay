@@ -79,14 +79,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   GetBuilder<LoginController>(
                     builder: (controller) {
                       return Visibility(
-                        visible: controller.inProgress ==false,
+                        visible: controller.inProgress == false,
                         replacement: CenteredCircularProgressIndicator(),
                         child: ElevatedButton(
                           onPressed: _onTapLoginButton,
                           child: Text('Login'),
                         ),
                       );
-                    }
+                    },
                   ),
                 ],
               ),
@@ -108,15 +108,11 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushNamedAndRemoveUntil(
           context,
           MainBottomNavScreen.name,
-              (predicate) => false,
+          (predicate) => false,
         );
       } else {
         // Show error
-        showSnackBarMessage(
-          context,
-          _loginController.errorMessage!,
-          true,
-        );
+        showSnackBarMessage(context, _loginController.errorMessage!, true);
       }
     }
   }
