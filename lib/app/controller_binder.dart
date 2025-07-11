@@ -3,11 +3,12 @@ import 'package:crafty_bay/features/auth/ui/controller/login_controller.dart';
 import 'package:crafty_bay/features/auth/ui/controller/sign_up_controller.dart';
 import 'package:crafty_bay/features/auth/ui/controller/verify_otp_controller.dart';
 import 'package:crafty_bay/features/auth/ui/screens/login_screen.dart';
+import 'package:crafty_bay/features/common/controllers/category_list_controller.dart';
 import 'package:crafty_bay/features/common/ui/controllers/main_bottom_nav_controller.dart';
 import 'package:crafty_bay/features/home/ui/controller/home_slider_controller.dart';
 import 'package:get/get.dart';
 
-import '../features/common/ui/controllers/auth_controller.dart';
+import '../features/common/controllers/auth_controller.dart';
 
 class ControllerBinder extends Bindings {
   final AuthController _authController = AuthController();
@@ -26,6 +27,7 @@ class ControllerBinder extends Bindings {
     Get.put(VerifyOtpController());
     Get.put(LoginController());
     Get.put(HomeSliderController());
+    Get.put(CategoryListController());
   }
 
   Future<void> _onUnAuthorize() async {

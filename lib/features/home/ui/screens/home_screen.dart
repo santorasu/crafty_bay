@@ -1,5 +1,6 @@
 import 'package:crafty_bay/app/asset_paths.dart';
 import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
+import 'package:crafty_bay/features/common/controllers/category_list_controller.dart';
 import 'package:crafty_bay/features/common/ui/controllers/main_bottom_nav_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -35,13 +36,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 16),
                 GetBuilder<HomeSliderController>(
                   builder: (sliderController) {
-                    if (sliderController.inProgress){
+                    if (sliderController.inProgress) {
                       return SizedBox(
-                          height: 192,
-                          child: CenteredCircularProgressIndicator());
+                        height: 192,
+                        child: CenteredCircularProgressIndicator(),
+                      );
                     }
-                    return HomeCarouselSlider(sliders: sliderController.sliderModelList,);
-                  }
+                    return HomeCarouselSlider(
+                      sliders: sliderController.sliderModelList,
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildSectionHeader(
@@ -57,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _getSpecialProducts(),
                 _buildSectionHeader(title: 'New', onTapSeeAll: () {}),
                 _getNewProducts(),
-                SizedBox(height: 8,)
+                SizedBox(height: 8),
               ],
             ),
           ),
@@ -102,7 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   AppBar buildAppBar() {
     return AppBar(
       title: SvgPicture.asset(AssetPaths.navAppLogoSvg),
@@ -130,13 +133,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _getCategoryList() {
     return SizedBox(
       height: 100,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return ProductCategoryItem();
+      child: GetBuilder<CategoryListController>(
+        builder: (controller) {
+          if (controller.initialLoadingInProgress) {
+            return CenteredCircularProgressIndicator();
+          }
+          return ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: controller.homeCategoryListItemLength,
+            itemBuilder: (context, index) {
+              return ProductCategoryItem(
+                categoryModel: controller.categoryModelList[index],
+              );
+            },
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
+          );
         },
-        separatorBuilder: (context, index) => const SizedBox(width: 8),
       ),
     );
   }
