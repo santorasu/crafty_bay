@@ -2,7 +2,7 @@ import 'package:crafty_bay/app/urls.dart';
 import 'package:crafty_bay/core/services/network/network_client.dart';
 import 'package:crafty_bay/features/auth/data/models/verify_otp_request_model.dart';
 import 'package:crafty_bay/features/common/models/user_model.dart';
-import 'package:crafty_bay/features/common/ui/controllers/auth_controller.dart';
+import 'package:crafty_bay/features/common/controllers/auth_controller.dart';
 import 'package:get/get.dart';
 
 class VerifyOtpController extends GetxController {
