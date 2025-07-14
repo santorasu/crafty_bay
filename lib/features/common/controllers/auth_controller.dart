@@ -30,7 +30,7 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<bool> isLoggedIn() async {
+  Future<bool> isuUserLoggedIn() async {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     String? tokenData = sharedPreferences.getString(_tokenKey);

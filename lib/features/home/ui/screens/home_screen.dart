@@ -2,6 +2,7 @@ import 'package:crafty_bay/app/asset_paths.dart';
 import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:crafty_bay/features/common/controllers/category_list_controller.dart';
 import 'package:crafty_bay/features/common/ui/controllers/main_bottom_nav_controller.dart';
+import 'package:crafty_bay/features/home/ui/controller/popular_product_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -71,12 +72,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _getPopularProducts() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        spacing: 8,
-        // children: [1, 2, 3, 4].map((e) => ProductCard()).toList(),
-      ),
+    return GetBuilder<PopularProductController>(
+      builder: (popularProductController) {
+        return Visibility(
+          visible: popularProductController.inProgress == false,
+          replacement: CenteredCircularProgressIndicator(),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              spacing: 8,
+              children: popularProductController.productModelList
+                  .map((product) => ProductCard(productModel: product))
+                  .toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -86,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-        //  return ProductCard();
+          //  return ProductCard();
         },
         separatorBuilder: (context, index) {
           return SizedBox(width: 8);
@@ -101,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         spacing: 8,
-       // children: [1, 2, 3, 4].map((e) => ProductCard()).toList(),
+        // children: [1, 2, 3, 4].map((e) => ProductCard()).toList(),
       ),
     );
   }
