@@ -4,7 +4,7 @@ class ProductModel {
   final int currentPrice;
   final List<String> photoUrls;
 
-  ProductModel( {
+  ProductModel({
     required this.id,
     required this.title,
     required this.currentPrice,
@@ -12,6 +12,10 @@ class ProductModel {
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> jsonData) {
+    List<String> l = [];
+    for (String s in jsonData['photos']) {
+      l.add(s);
+    }
     return ProductModel(
       id: jsonData['_id'],
       title: jsonData['title'],
