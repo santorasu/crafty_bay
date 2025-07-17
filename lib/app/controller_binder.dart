@@ -10,6 +10,7 @@ import 'package:crafty_bay/features/home/ui/controller/popular_product_list_cont
 import 'package:get/get.dart';
 
 import '../features/common/controllers/auth_controller.dart';
+import '../features/products/controller/add_to_cart_controller.dart';
 
 class ControllerBinder extends Bindings {
   final AuthController _authController = AuthController();
@@ -30,6 +31,7 @@ class ControllerBinder extends Bindings {
     Get.put(HomeSliderController());
     Get.put(CategoryListController());
     Get.put(PopularProductController());
+    Get.put(AddToCartController());
   }
 
   Future<void> _onUnAuthorize() async {

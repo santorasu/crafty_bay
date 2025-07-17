@@ -88,6 +88,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                   ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center  ,
+                    children: [
+                      Text("Don't have an account?"),
+                      TextButton(onPressed: _onTapSignUpButton, child: Text('Sign Up'))
+                    ],
+                  )
                 ],
               ),
             ),
@@ -95,6 +103,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void _onTapSignUpButton(){
+
   }
 
   Future<void> _onTapLoginButton() async {
