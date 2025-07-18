@@ -20,4 +20,5 @@ class Urls {
       '$_baseUrl/products/id/$productId';
 
   static const String  addToCartUrl = '$_baseUrl/cart';
+  static const String getCartItemListUrl = '$_baseUrl/cart';
 }
