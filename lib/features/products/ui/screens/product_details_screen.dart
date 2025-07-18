@@ -4,15 +4,14 @@ import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.
 import 'package:crafty_bay/core/ui/widgets/snack_bar_message.dart';
 import 'package:crafty_bay/features/auth/ui/screens/login_screen.dart';
 import 'package:crafty_bay/features/common/controllers/auth_controller.dart';
-import 'package:crafty_bay/features/products/controller/add_to_cart_controller.dart';
-import 'package:crafty_bay/features/products/controller/product_details_controller.dart';
-import 'package:crafty_bay/features/products/data/models/product_details_model.dart';
-import 'package:crafty_bay/features/products/widgets/color_picker.dart';
-import 'package:crafty_bay/features/products/widgets/inc_dec_button.dart';
-import 'package:crafty_bay/features/products/widgets/product_image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+import '../../controller/add_to_cart_controller.dart';
+import '../../controller/product_details_controller.dart';
+import '../../data/models/product_details_model.dart';
+import '../../widgets/color_picker.dart';
+import '../../widgets/inc_dec_button.dart';
+import '../../widgets/product_image_slider.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key, required this.productId});
@@ -25,11 +24,12 @@ class ProductDetailsScreen extends StatefulWidget {
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
+
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final ProductDetailsController _productDetailsController =
-      ProductDetailsController();
-
-  final AddToCartController _addToCartController = Get.find<AddToCartController>();
+  ProductDetailsController();
+  final AddToCartController _addToCartController = Get.find<
+      AddToCartController>();
 
   @override
   void initState() {
@@ -42,146 +42,145 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Product Details')),
       body: GetBuilder(
-        init: _productDetailsController,
-        builder: (_) {
-          if (_productDetailsController.inProgress) {
-            return CenteredCircularProgressIndicator();
-          }
+          init: _productDetailsController,
+          builder: (_) {
+            if (_productDetailsController.inProgress) {
+              return CenteredCircularProgressIndicator();
+            }
 
-          if (_productDetailsController.errorMessage != null) {
-            return Center(child: Text(_productDetailsController.errorMessage!));
-          }
+            if (_productDetailsController.errorMessage != null) {
+              return Center(
+                child: Text(_productDetailsController.errorMessage!),
+              );
+            }
 
-          final ProductDetailsModel product =
-              _productDetailsController.productDetails;
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ProductImageSlider(images: product.photoUrls),
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    product.title,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0.6,
-                                      color: Colors.black54,
+            final ProductDetailsModel product = _productDetailsController
+                .productDetails;
+
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ProductImageSlider(images: product.photoUrls),
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      product.title,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0.6,
+                                        color: Colors.black54,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                IncDecButton(onChange: (int value) {}),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Wrap(
+                                  IncDecButton(onChange: (int value) {}),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Wrap(
+                                    children: [
+                                      Icon(Icons.star, size: 18, color: Colors.amber),
+                                      Text(
+                                        '4.5',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                  TextButton(
+                                    onPressed: () {},
+                                    child: Text('Reviews'),
+                                  ),
+                                  Card(
+                                    color: AppColor.themeColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: Icon(
+                                        Icons.favorite_outline_rounded,
+                                        size: 18,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Visibility(
+                                visible: product.colors.isNotEmpty,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(
-                                      Icons.star,
-                                      size: 18,
-                                      color: Colors.amber,
-                                    ),
                                     Text(
-                                      '4.5',
-                                      style: TextStyle(color: Colors.grey),
+                                      'Color',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
+                                    const SizedBox(height: 8),
+                                    ColorPicker(
+                                      colors: product.colors,
+                                      onSelected: (String value) {},
+                                    ),
+                                    const SizedBox(height: 16),
                                   ],
                                 ),
-                                TextButton(
-                                  onPressed: () {},
-                                  child: Text('Reviews'),
+                              ),
+                              Visibility(
+                                visible: product.sizes.isNotEmpty,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Size',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    ColorPicker(
+                                      colors: product.sizes,
+                                      onSelected: (String value) {},
+                                    ),
+                                    const SizedBox(height: 16),
+                                  ],
                                 ),
-                                Card(
-                                  color: AppColor.themeColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(2),
-                                    child: Icon(
-                                      Icons.favorite_outline_rounded,
-                                      size: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                              ),
+                              Text(
+                                'Description',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                              ],
-                            ),
-                            Visibility(
-                              visible: product.colors.isNotEmpty,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Color',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  ColorPicker(
-                                    colors: product.colors,
-                                    onSelected: (String value) {},
-                                  ),
-                                  const SizedBox(height: 16),
-                                ],
                               ),
-                            ),
-                            Visibility(
-                              visible: product.sizes.isNotEmpty,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Size',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  ColorPicker(
-                                    colors: product.sizes,
-                                    onSelected: (String value) {},
-                                  ),
-                                  const SizedBox(height: 16),
-                                ],
+                              const SizedBox(height: 8),
+                              Text(
+                                product.description,
+                                style: TextStyle(color: Colors.grey),
                               ),
-                            ),
-                            Text(
-                              product.description,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '''Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.''',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              _buildPriceAndAddToCartSection(product),
-            ],
-          );
-        },
+                _buildPriceAndAddToCartSection(product),
+              ],
+            );
+          }
       ),
     );
   }
@@ -215,17 +214,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           SizedBox(
             width: 120,
             child: GetBuilder(
-              init: _addToCartController,
-              builder: (_) {
-                return Visibility(
-                  visible: _addToCartController.inProgress== false,
-                  replacement: CenteredCircularProgressIndicator(),
-                  child: ElevatedButton(
-                    onPressed: _onTapAddToCartButton,
-                    child: Text('Add to Cart'),
-                  ),
-                );
-              }
+                init: _addToCartController,
+                builder: (_) {
+                  return Visibility(
+                    visible: _addToCartController.inProgress == false,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: _onTapAddToCartButton, child: Text('Add to Cart'),
+                    ),
+                  );
+                }
             ),
           ),
         ],
@@ -233,12 +231,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  void _onTapAddToCartButton() async {
-    if (await Get.find<AuthController>().isuUserLoggedIn()) {
+  Future<void> _onTapAddToCartButton() async {
+    if (await Get.find<AuthController>().isUserLoggedIn()) {
       final bool result = await _addToCartController.addToCart(widget.productId);
-      if (result){
-        showSnackBarMessage(context, 'Added to Cart');
-      } else{
+      if (result) {
+        showSnackBarMessage(context, 'Added to cart');
+      } else {
         showSnackBarMessage(context, _addToCartController.errorMessage!);
       }
     } else {

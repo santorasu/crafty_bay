@@ -24,47 +24,45 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: buildAppBar(),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                const SizedBox(height: 16),
-                ProductSearchBar(),
-                const SizedBox(height: 16),
-                GetBuilder<HomeSliderController>(
-                  builder: (sliderController) {
-                    if (sliderController.inProgress) {
-                      return SizedBox(
-                        height: 192,
-                        child: CenteredCircularProgressIndicator(),
-                      );
-                    }
-                    return HomeCarouselSlider(
-                      sliders: sliderController.sliderModelList,
+    return Scaffold(
+      appBar: buildAppBar(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              ProductSearchBar(),
+              const SizedBox(height: 16),
+              GetBuilder<HomeSliderController>(
+                builder: (sliderController) {
+                  if (sliderController.inProgress) {
+                    return SizedBox(
+                      height: 192,
+                      child: CenteredCircularProgressIndicator(),
                     );
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildSectionHeader(
-                  title: 'Categories',
-                  onTapSeeAll: () {
-                    Get.find<MainBottomNavController>().moveToCategory();
-                  },
-                ),
-                _getCategoryList(),
-                _buildSectionHeader(title: 'Popular', onTapSeeAll: () {}),
-                _getPopularProducts(),
-                _buildSectionHeader(title: 'Special', onTapSeeAll: () {}),
-                _getSpecialProducts(),
-                _buildSectionHeader(title: 'New', onTapSeeAll: () {}),
-                _getNewProducts(),
-                SizedBox(height: 8),
-              ],
-            ),
+                  }
+                  return HomeCarouselSlider(
+                    sliders: sliderController.sliderModelList,
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              _buildSectionHeader(
+                title: 'Categories',
+                onTapSeeAll: () {
+                  Get.find<MainBottomNavController>().moveToCategory();
+                },
+              ),
+              _getCategoryList(),
+              _buildSectionHeader(title: 'Popular', onTapSeeAll: () {}),
+              _getPopularProducts(),
+              _buildSectionHeader(title: 'Special', onTapSeeAll: () {}),
+              _getSpecialProducts(),
+              _buildSectionHeader(title: 'New', onTapSeeAll: () {}),
+              _getNewProducts(),
+              SizedBox(height: 8),
+            ],
           ),
         ),
       ),

@@ -15,7 +15,7 @@ class ProductCategoryScreen extends StatefulWidget {
 class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
   final ScrollController _scrollController = ScrollController();
   final CategoryListController _categoryListController =
-      Get.find<CategoryListController>();
+  Get.find<CategoryListController>();
 
   @override
   void initState() {
@@ -51,6 +51,7 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
             if (controller.initialLoadingInProgress) {
               return CenteredCircularProgressIndicator();
             }
+
             return Column(
               children: [
                 Expanded(
@@ -60,9 +61,9 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
                       controller: _scrollController,
                       itemCount: controller.categoryModelList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
                         mainAxisSpacing: 8,
                         crossAxisSpacing: 2,
-                        crossAxisCount: 4,
                       ),
                       itemBuilder: (context, index) {
                         return FittedBox(
