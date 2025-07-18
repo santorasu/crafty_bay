@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import 'login_screen.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -160,6 +162,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       );
                     },
                   ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Already have an account?"),
+                      TextButton(
+                        onPressed: _onTabLoginButton,
+                        child: Text('Login'),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 32),
                 ],
               ),
@@ -168,6 +181,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void _onTabLoginButton() {
+    Navigator.pop(context);
   }
 
   Future<void> _onTapSignUpButton() async {

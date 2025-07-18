@@ -1,6 +1,7 @@
 import 'package:crafty_bay/app/urls.dart';
 import 'package:crafty_bay/core/services/network/network_client.dart';
 import 'package:get/get.dart';
+
 import '../data/models/product_details_model.dart';
 
 class ProductDetailsController extends GetxController {

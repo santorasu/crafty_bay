@@ -42,7 +42,7 @@ class ProductListByCategoryController extends GetxController {
     update();
 
     final NetworkResponse response = await Get.find<NetworkClient>().getRequest(
-      Urls.productsByTagUrl('Popular'),
+      Urls.productListByCategoryUrl(_count, _currentPage, categoryId),
     );
     if (response.isSuccess) {
       _lastPage = response.responseData!['data']['last_page'] ?? 0;
