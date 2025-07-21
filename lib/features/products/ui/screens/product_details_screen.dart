@@ -4,6 +4,7 @@ import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.
 import 'package:crafty_bay/core/ui/widgets/snack_bar_message.dart';
 import 'package:crafty_bay/features/auth/ui/screens/login_screen.dart';
 import 'package:crafty_bay/features/common/controllers/auth_controller.dart';
+import 'package:crafty_bay/features/reviews/ui/screens/reviews_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/add_to_cart_controller.dart';
@@ -97,7 +98,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     ],
                                   ),
                                   TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, ReviewsScreen.name);
+                                    },
                                     child: Text('Reviews'),
                                   ),
                                   Card(

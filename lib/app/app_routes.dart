@@ -5,6 +5,7 @@ import 'package:crafty_bay/features/common/models/category_model.dart';
 import 'package:crafty_bay/features/common/ui/screens/main_bottom_nav_screen.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_details_screen.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_screen.dart';
+import 'package:crafty_bay/features/reviews/ui/screens/reviews_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../features/auth/ui/screens/splash_screen.dart';
@@ -30,6 +31,8 @@ class AppRoutes {
     } else if (settings.name == VerifyOtpScreen.name) {
       final String email = settings.arguments as String;
       screenWidget = VerifyOtpScreen(email: email);
+    } else if (settings.name == ReviewsScreen.name) {
+      screenWidget = ReviewsScreen();
     }
     return MaterialPageRoute(builder: (context) => screenWidget);
   }
