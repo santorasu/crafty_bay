@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../app/app_colors.dart';
+import 'create_review_screen.dart';
 
 class ReviewsScreen extends StatefulWidget {
   const ReviewsScreen({super.key});
@@ -29,7 +30,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           spreadRadius: 2,
                           blurRadius: 6,
                           offset: const Offset(0, 2),
@@ -53,7 +54,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                           ),
                           const SizedBox(height: 10),
                           const Text(
-                            'Ami ekta review dimu, ekta review dimu, ekta review dimu, er onk pacha, '
+                            'Ami ekta review dimu, ekta review dimu, ekta review dimu, '
                                 'Ami tomar moner vitor ekbar ghure aste chai, amay koto ta valobasho ekbar sei kotha jaante chai',
                             style: TextStyle(color: Colors.black87),
                           ),
@@ -68,7 +69,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
             Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColor.themeColor.withOpacity(0.15),
+                color: AppColor.themeColor.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
@@ -83,7 +84,9 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                         backgroundColor: AppColor.themeColor,
                         foregroundColor: Colors.white,
                       ),
-                      onPressed: (){}, icon: Icon(Icons.add)),
+                      onPressed: (){
+                        Navigator.pushNamed(context, CreateReviewScreen.name);
+                      }, icon: Icon(Icons.add)),
                 ],
               ),
             )

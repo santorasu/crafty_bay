@@ -9,6 +9,7 @@ import 'package:crafty_bay/features/reviews/ui/screens/reviews_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../features/auth/ui/screens/splash_screen.dart';
+import '../features/reviews/ui/screens/create_review_screen.dart';
 
 class AppRoutes {
   static Route<dynamic> routes(RouteSettings settings) {
@@ -33,6 +34,8 @@ class AppRoutes {
       screenWidget = VerifyOtpScreen(email: email);
     } else if (settings.name == ReviewsScreen.name) {
       screenWidget = ReviewsScreen();
+    } else if (settings.name == CreateReviewScreen.name) {
+      screenWidget = CreateReviewScreen();
     }
     return MaterialPageRoute(builder: (context) => screenWidget);
   }
