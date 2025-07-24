@@ -1,80 +1,125 @@
-import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
-import 'package:crafty_bay/features/common/models/category_model.dart';
-import 'package:crafty_bay/features/common/ui/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
-import '../../controller/product_list_category_controller.dart';
+import '../../../common/loading_widgets/loading_widget.dart';
+import '../../../common/ui/widgets/product_card.dart';
+import '../../controller/new_prduct_controller.dart';
+import '../../controller/popular_product_controller.dart';
+import '../../controller/special_product_controller.dart';
 
 class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key, required this.category});
+  const ProductListScreen({super.key, required this.tag});
 
-  final CategoryModel category;
-  static final String name = '/product-list';
+  final String tag;
+
+  static final String name = 'product-list';
 
   @override
-  State<ProductListScreen> createState() => _ProductListScreenState();
+  State<ProductListScreen> createState() => _ProductList();
 }
 
-class _ProductListScreenState extends State<ProductListScreen> {
+class _ProductList extends State<ProductListScreen> {
   final ScrollController _scrollController = ScrollController();
-  final ProductListByCategoryController _productListByCategoryController =
-      ProductListByCategoryController();
+  dynamic _controller;
 
   @override
   void initState() {
     super.initState();
-    _productListByCategoryController.getProductList(widget.category.id);
-    _scrollController.addListener(_loadMoreData);
+    _scrollController.addListener(loadMoreData);
+    _controller = sourceCheck();
   }
 
-  void _loadMoreData() {
-    if (_scrollController.position.extentAfter < 300) {
-      Get.find<ProductListByCategoryController>().getProductList(
-        widget.category.id,
-      );
+  void loadMoreData() {
+    if (_scrollController.position.extentAfter < 50) {
+      // Get.find<ProductListByCategoryController>().getProductList(
+      //   categoryId: widget.category.id,
+      // );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.category.title)),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: _onTapBack,
+          icon: Icon(Icons.arrow_back_ios_new),
+        ),
+        title: Text(
+          widget.tag,
+          style: TextTheme.of(context).headlineSmall,
+        ),
+      ),
       body: GetBuilder(
-        init: _productListByCategoryController,
-        builder: (controller) {
-          if (controller.initialLoadingInProgress) {
-            return CenteredCircularProgressIndicator();
-          }
-          return Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: GridView.builder(
-                    itemCount: controller.productModelList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemBuilder: (context, index) {
-                      return FittedBox(
-                        child: ProductCard(
-                          productModel: controller.productModelList[index],
+        init: _controller,
+        builder: (_) {
+          return Visibility(
+            visible: _controller.isLoading == false,
+            replacement: Center(child: LoadingWidget.forScreen()),
+            child:
+              _controller.productList.isEmpty
+                    ? Center(child: Text('No product on this category'))
+                    : Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: GridView.builder(
+                              controller: _scrollController,
+                              itemCount: _controller.productList.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 16,
+                                  ),
+                              itemBuilder: ((BuildContext context, int index) {
+                                Logger().w(
+                                  _controller.productList.length,
+                                );
+
+                                var controller =
+                                  _controller.productList[index];
+                                return FittedBox(
+                                  child: ProductCard(
+                                    id:  controller.id,
+                                    imageUrl:
+                                        controller.imageUrl.isNotEmpty
+                                            ? controller.imageUrl.first
+                                            : null,
+                                    title: controller.name,
+                                    price: controller.price,
+                                  ),
+                                );
+                              }),
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Visibility(
-                visible: controller.inProgress,
-                child: LinearProgressIndicator(),
-              ),
-            ],
+                        _controller.isLoading
+                            ? LinearProgressIndicator()
+                            : SizedBox.shrink(),
+                      ],
+                    ),
           );
         },
       ),
     );
+  }
+
+ dynamic sourceCheck(){
+    if(widget.tag.toLowerCase() == 'new'){
+     return  Get.find<NewProductController>();
+    }else if(widget.tag.toLowerCase() == 'special'){
+      return  Get.find<SpecialProductController>();
+    }else if(widget.tag.toLowerCase() == 'popular'){
+      return  Get.find<PopularProductController>();
+    }else {
+      return  Get.find<NewProductController>();
+    }
+  }
+
+
+  _onTapBack() {
+    Navigator.pop(context);
   }
 }

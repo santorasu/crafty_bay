@@ -1,66 +1,100 @@
-import 'package:crafty_bay/features/cart/ui/screens/cart_screen.dart';
-import 'package:crafty_bay/features/common/controllers/category_list_controller.dart';
-import 'package:crafty_bay/features/common/ui/controllers/main_bottom_nav_controller.dart';
-import 'package:crafty_bay/features/home/ui/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../home/ui/controller/home_slider_controller.dart';
-import '../../../home/ui/controller/popular_product_list_controller.dart';
-import '../../../products/ui/screens/product_category_screen.dart';
-import '../../../wishlist/ui/screens/wish_list_screen.dart';
+
+import '../../../auth/ui/controller/auth_controller.dart';
+import '../../../auth/ui/controller/main_bottom_nav_controller.dart';
+import '../../../cert/screens/cart_checkout_screen.dart';
+import '../../../home/controller/home_slider_controller.dart';
+import '../../../home/ui/screens/home_screen.dart';
+import '../../../products/controller/new_prduct_controller.dart';
+import '../../../products/controller/popular_product_controller.dart';
+import '../../../products/controller/product_ catagory_controller.dart';
+import '../../../products/controller/special_product_controller.dart';
+import '../../../products/ui/screens/product_catagory_screen.dart';
+import '../../../wish_list/ui/screens/wish_list_screen.dart';
 
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});
 
-  static final String name = '/main-bottom-nav';
+  static String name = 'main_bottom_nav';
 
   @override
   State<MainBottomNavScreen> createState() => _MainBottomNavScreenState();
 }
-
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
-  final List<Widget> _screens = [
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+   initializeAllData();
+  }
+
+  initializeAllData() {
+   return  WidgetsBinding.instance.addPostFrameCallback((_){
+      AuthController.getUserInformation();
+      Get.find<HomeSliderController>().getSlider();
+      Get.find<ProductCategoryController>().getCategoryList();
+      Get.find<PopularProductController>().getPopularProduct();
+      Get.find<SpecialProductController>().getSpecialProduct();
+       Get.find<NewProductController>().getNewProduct();
+    });
+  }
+
+
+
+  List<Widget> screens = [
     HomeScreen(),
     ProductCategoryScreen(),
-    CartScreen(),
+    CartCheckOutScreen(),
     WishListScreen(),
   ];
 
+  MainBottomNavController mainBottomNavController =
+      Get.find<MainBottomNavController>();
+
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.find<HomeSliderController>().getHomeSliders();
-      Get.find<CategoryListController>().getCategoryList();
-      Get.find<PopularProductController>().getPopularProducts();
-    });
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: BuildBottomNav(),
+      body: GetBuilder<MainBottomNavController>(
+        builder: (controller) {
+          return screens[controller.selectedIndex];
+        }
+      ),
+    );
   }
+}
+
+
+class BuildBottomNav extends StatelessWidget {
+  const BuildBottomNav({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MainBottomNavController>(
-      builder: (navController) {
-        return Scaffold(
-          body: _screens[navController.selectedIndex],
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: navController.selectedIndex,
-            onDestinationSelected: navController.changeIndex,
-            destinations: [
-              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-              NavigationDestination(
-                icon: Icon(Icons.category_outlined),
-                label: 'Category',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.shopping_cart),
-                label: 'Cart',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.favorite_outline_rounded),
-                label: 'Wishlist',
-              ),
-            ],
-          ),
+      builder: (controller) {
+        return NavigationBar(
+          selectedIndex: controller.selectedIndex,
+          onDestinationSelected: (int index) {
+            controller.changeScreen(index);
+          },
+          destinations: [
+            NavigationDestination(icon: Icon(Icons.home), label: 'home'),
+            NavigationDestination(
+              icon: Icon(Icons.category),
+              label: 'Category',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.add_shopping_cart),
+              label: 'Cart',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.favorite_outlined),
+              label: 'Wish',
+            ),
+          ],
         );
       },
     );

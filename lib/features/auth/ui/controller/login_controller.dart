@@ -1,40 +1,47 @@
-import 'package:crafty_bay/app/urls.dart';
-import 'package:crafty_bay/core/services/network/network_client.dart';
-import 'package:crafty_bay/features/auth/data/models/login_request_model.dart';
-import 'package:crafty_bay/features/common/models/user_model.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
-import '../../../common/controllers/auth_controller.dart';
+import '../../../../app/app.dart';
+import '../../../../app/urls.dart';
+import '../../../../core/service/network/network_client.dart';
+import '../../../common/ui/screens/main_bottom_nav_screen.dart';
+import '../../data/models/login_model.dart';
+import 'auth_controller.dart';
 
-class LoginController extends GetxController {
-  bool _inProgress = false;
+class LoginController extends GetxController{
+  bool isLoading = false ;
 
-  String? _errorMessage;
-
-  bool get inProgress => _inProgress;
-
-  String? get errorMessage => _errorMessage;
-
-  Future<bool> login(LoginRequestModel model) async {
-    bool isSuccess = false;
-    _inProgress = true;
+  Future<void>login ({required String email, required String password} )async{
+    isLoading = true;
     update();
-    final NetworkResponse response = await Get.find<NetworkClient>()
-        .postRequest(Urls.loginUrl, body: model.toJson());
-    if (response.isSuccess) {
-      await Get.find<AuthController>().saveUserData(
-        response.responseData!['data']['token'],
-        UserModel.fromJson(response.responseData!['data']['user']),
-      );
-      isSuccess = true;
-      _errorMessage = null;
-    } else {
-      _errorMessage = response.errorMessage!;
+
+    final String url = Urls.loginUrls;
+    Map<String, dynamic> requestBody = {
+      "email": email,
+      "password": password
+    };
+    NetworkResponse response = await Get.find<NetworkClient>().postRequest(url: url, body: requestBody);
+
+    if(response.statusCode == 200 || response.statusCode == 201){
+      LoginModel information = LoginModel.fromJson(response.responseBody!);
+
+     await AuthController.saveUserInformation(userToken: information.userData.token, user: information.userData.user.toJson());
+     await AuthController.getUserInformation();
+
+
+      Logger().i('''
+      =>>   ${information.message}
+      =>>   ${information.userData.token}
+      =>>   ${information.userData.user.firstName}
+      ''');
+
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(MainBottomNavScreen.name, (predicate)=>false);
+    }else {
+      Get.snackbar('Sorry', response.errorMessage!);
     }
 
-    _inProgress = false;
+    isLoading = false;
     update();
-
-    return isSuccess;
   }
+
 }

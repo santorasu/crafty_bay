@@ -1,104 +1,97 @@
-import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
-import 'package:crafty_bay/features/auth/data/models/login_request_model.dart';
-import 'package:crafty_bay/features/auth/ui/controller/login_controller.dart';
-import 'package:crafty_bay/features/auth/ui/screens/sign_up_screen.dart';
-import 'package:crafty_bay/features/auth/ui/widgets/app_logo.dart';
-import 'package:email_validator/email_validator.dart';
+import 'package:crafty_bay/features/auth/ui/screens/register_screen.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/ui/widgets/snack_bar_message.dart';
-import '../../../common/ui/screens/main_bottom_nav_screen.dart';
+import '../../../../app/app_colors.dart';
+import '../../../common/loading_widgets/loading_widget.dart';
+import '../controller/login_controller.dart';
+import '../widgets/logo_header.dart';
+import '../widgets/validator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
-  static final String name = '/login';
+  static final name = 'login';
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final LoginController _loginController = Get.find<LoginController>();
+
+  final emailRegex = RegExp(r'^[\w.-]+@[\w-]+\.[\w.-]+$');
+  final passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z]).{6,}$');
 
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
-
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+        body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: SingleChildScrollView(
             child: Form(
               key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 children: [
-                  SizedBox(height: 44),
-                  AppLogo(width: 90, height: 90),
-                  SizedBox(height: 16),
-                  Text('Welcome Back', style: textTheme.titleLarge),
-                  SizedBox(height: 4),
-                  Text(
-                    'Please enter your email & password',
-                    style: textTheme.headlineMedium,
+                  SizedBox(height: MediaQuery.of(context).size.height / 5.5),
+                  LogoHeader(
+                    titleLarge: 'Welcome Back',
+                    titleSmall: 'Please Enter your email address',
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: _emailTEController,
+                    validator: (value) {
+                      return validator(emailRegex, value, 'Enter a valid mail');
+                    },
                     textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(hintText: "Email"),
-                    validator: (String? value) {
-                      String emailValue = value ?? '';
-                      if (EmailValidator.validate(emailValue) == false) {
-                        return 'Enter a valid email';
-                      }
-                      return null;
-                    },
+                    decoration: InputDecoration(hintText: 'Email Address'),
                   ),
-
-                  SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   TextFormField(
-                    controller: _passwordController,
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(hintText: "Password"),
-
-                    validator: (String? value) {
-                      if ((value?.length ?? 0) <= 6) {
-                        return 'Enter a password more than 6 characters';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  GetBuilder<LoginController>(
-                    builder: (controller) {
-                      return Visibility(
-                        visible: controller.inProgress == false,
-                        replacement: CenteredCircularProgressIndicator(),
-                        child: ElevatedButton(
-                          onPressed: _onTapLoginButton,
-                          child: Text('Login'),
-                        ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: _passwordTeController,
+                    validator: (value) {
+                      return validator(
+                        passwordRegex,
+                        value,
+                        'Enter a password of 6 char',
                       );
                     },
+                    textInputAction: TextInputAction.go,
+                    decoration: InputDecoration(hintText: 'Password'),
                   ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Don't have an account?"),
-                      TextButton(
-                        onPressed: _onTapSignUpButton,
-                        child: Text('Sign Up'),
-                      ),
-                    ],
+                  const SizedBox(height: 20),
+                  ElevatedButton(onPressed: _onTapLogIn, child: GetBuilder<LoginController>(
+                    builder: (controller) {
+                      return Visibility(
+                          visible: controller.isLoading == false,
+                          replacement: LoadingWidget.forButton(),
+                          child: Text('Login'));
+                    }
+                  )),
+                  const SizedBox(height: 50),
+
+                  RichText(
+                    text: TextSpan(
+                      text: 'Don\'t have and account? ',
+                      style: TextStyle(color: Colors.black),
+                      children: [
+                        TextSpan(
+                          text: 'Sign up',
+                          style: TextStyle(color: AppColors.themColor,decoration: TextDecoration.underline),
+                          recognizer: TapGestureRecognizer()..onTap=(){
+                            Navigator.pushNamed(context, RegisterScreen.name);
+                          }
+
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -109,34 +102,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _onTapSignUpButton() {
-    Navigator.pushNamed(context, SignUpScreen.name);
-  }
+  _onTapLogIn() async {
+   if( _formKey.currentState!.validate()){
+    await Get.find<LoginController>().login(
+         email: _emailTEController.text.trim(),
+         password: _passwordTeController.text
+     );
+   }
 
-  Future<void> _onTapLoginButton() async {
-    if (_formKey.currentState!.validate()) {
-      LoginRequestModel model = LoginRequestModel(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-      );
-      final bool isSuccess = await _loginController.login(model);
-      if (isSuccess) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          MainBottomNavScreen.name,
-          (predicate) => false,
-        );
-      } else {
-        // Show error
-        showSnackBarMessage(context, _loginController.errorMessage!, true);
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }
