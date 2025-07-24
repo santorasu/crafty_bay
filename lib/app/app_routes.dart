@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../features/auth/ui/screens/login_screen.dart';
 import '../features/auth/ui/screens/otp_verification_screen.dart';
-import '../features/auth/ui/screens/register_screen.dart';
+import '../features/auth/ui/screens/sign_up_screen.dart';
 import '../features/auth/ui/screens/splash_screen.dart';
 import '../features/common/ui/screens/main_bottom_nav_screen.dart';
 import '../features/home/ui/screens/home_screen.dart';

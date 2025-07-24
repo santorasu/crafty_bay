@@ -1,13 +1,12 @@
-import 'package:crafty_bay/features/auth/ui/screens/register_screen.dart';
+import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
+import 'package:crafty_bay/features/auth/ui/screens/sign_up_screen.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../../app/app_colors.dart';
-import '../../../common/loading_widgets/loading_widget.dart';
 import '../controller/login_controller.dart';
-import '../widgets/logo_header.dart';
-import '../widgets/validator.dart';
+import '../widgets/app_logo.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,15 +18,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailTEController = TextEditingController();
-  final TextEditingController _passwordTeController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final emailRegex = RegExp(r'^[\w.-]+@[\w-]+\.[\w.-]+$');
-  final passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z]).{6,}$');
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -35,47 +33,65 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             child: Form(
               key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 children: [
-                  SizedBox(height: MediaQuery.of(context).size.height / 5.5),
-                  LogoHeader(
-                    titleLarge: 'Welcome Back',
-                    titleSmall: 'Please Enter your email address',
+                  SizedBox(height: 44),
+                  AppLogo(width: 90, height: 90),
+                  SizedBox(height: 16),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Welcome Back', style: textTheme.titleLarge),
+                      SizedBox(height: 4),
+                      Text(
+                        'Please enter your email & password',
+                        style: textTheme.headlineMedium,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 24),
                   TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: _emailTEController,
-                    validator: (value) {
-                      return validator(emailRegex, value, 'Enter a valid mail');
-                    },
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(hintText: 'Email Address'),
+                    decoration: InputDecoration(hintText: "Email"),
+                    validator: (String? value) {
+                      String emailValue = value ?? '';
+                      if (EmailValidator.validate(emailValue) == false) {
+                        return 'Enter a valid email';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 10),
+                  SizedBox(height: 8),
                   TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: _passwordTeController,
-                    validator: (value) {
-                      return validator(
-                        passwordRegex,
-                        value,
-                        'Enter a password of 6 char',
-                      );
+                    controller: _passwordController,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(hintText: "Password"),
+
+                    validator: (String? value) {
+                      if ((value?.length ?? 0) <= 6) {
+                        return 'Enter a password more than 6 characters';
+                      }
+                      return null;
                     },
-                    textInputAction: TextInputAction.go,
-                    decoration: InputDecoration(hintText: 'Password'),
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(onPressed: _onTapLogIn, child: GetBuilder<LoginController>(
+                  SizedBox(height: 16),
+                  GetBuilder<LoginController>(
                     builder: (controller) {
                       return Visibility(
-                          visible: controller.isLoading == false,
-                          replacement: LoadingWidget.forButton(),
-                          child: Text('Login'));
-                    }
-                  )),
-                  const SizedBox(height: 50),
+                        visible: controller.isLoading == false,
+                        replacement: CenteredCircularProgressIndicator(),
+                        child: ElevatedButton(
+                          onPressed: _onTapLogIn,
+                          child: Text('Login'),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
 
                   RichText(
                     text: TextSpan(
@@ -105,8 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
   _onTapLogIn() async {
    if( _formKey.currentState!.validate()){
     await Get.find<LoginController>().login(
-         email: _emailTEController.text.trim(),
-         password: _passwordTeController.text
+         email: _emailController.text.trim(),
+         password: _passwordController.text
      );
    }
 

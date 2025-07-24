@@ -8,77 +8,29 @@ part 'network_response.dart';
 
 class NetworkClient {
   final VoidCallback onUnAuthorize;
-  String defaultErrorMessage = 'Something went wrong';
-  Map<String, String> Function() commonHeader;
   final VoidCallback onSocketException;
+  final Map<String, String> Function() commonHeader;
 
   final Logger _logger = Logger();
+  final String defaultErrorMessage = 'Something went wrong';
 
-  NetworkClient({required this.onSocketException, required this.onUnAuthorize, required this.commonHeader});
+  NetworkClient({
+    required this.onSocketException,
+    required this.onUnAuthorize,
+    required this.commonHeader,
+  });
 
   Future<NetworkResponse> getRequest({required String url}) async {
-
     try {
       Uri uri = Uri.parse(url);
+      _logPreRequest(url);
 
-      _logger.i('''
-      pre request log
-      ==> $url
-      ''');
-
-      Response response = await get(
-        uri,
-        headers: commonHeader(),
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var decodeJson = jsonDecode(response.body);
-        _logger.i('''
-      post request log
-      ==> $url
-      ==> $decodeJson
-      ''');
-        return NetworkResponse(
-          isSuccess: true,
-          statusCode: response.statusCode,
-          responseBody: decodeJson,
-        );
-      } else if (response.statusCode == 401|| response.statusCode == 402 || response.statusCode == 403) {
-        _logger.e('status ${response.statusCode}, body==> ${response.body} unAuth');
-        onUnAuthorize();
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: defaultErrorMessage,
-        );
-      } else {
-        var decodedJson = jsonDecode(response.body);
-        _logger.d(decodedJson);
-        _logger.i('''
-      post request log
-      ==> $url
-      ==> $decodedJson
-      ''');
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: decodedJson['msg'],
-        );
-      }
+      Response response = await get(uri, headers: commonHeader());
+      return _handleResponse(response, url);
     } on SocketException {
-      onSocketException();
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -1,
-        errorMessage: 'Check your network connection and try again later',
-      );
+      return _handleSocketException();
     } catch (e) {
-      _logger.e(e.toString());
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -1,
-        errorMessage: e.toString(),
-      );
+      return _handleGenericException(e);
     }
   }
 
@@ -88,65 +40,18 @@ class NetworkClient {
   }) async {
     try {
       Uri uri = Uri.parse(url);
-
-      // Map<String, String> commonHeader = {
-      //   "Content-Type": "application/json",
-      //   "token": Get.find<AuthController>().token ?? ''
-      // };
-
-      _logger.i('''
-      pre request log
-      ==> $url
-      ==> ${jsonEncode(body)}
-      ''');
-
-
+      _logPreRequest(url, body: body);
 
       Response response = await post(
         uri,
-        body: jsonEncode(body),
         headers: commonHeader(),
+        body: jsonEncode(body),
       );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var decodedJson = jsonDecode(response.body);
-        _logger.d(decodedJson);
-        return NetworkResponse(
-          isSuccess: true,
-          statusCode: response.statusCode,
-          responseBody: decodedJson,
-        );
-      } else if (response.statusCode == 401) {
-        _logger.e('status ${response.statusCode}, body==> ${response.body} unAuth');
-        onUnAuthorize();
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: defaultErrorMessage,
-        );
-      } else {
-        var decodedJson = jsonDecode(response.body);
-        _logger.d(decodedJson);
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: decodedJson['msg'] ?? defaultErrorMessage,
-        );
-      }
+      return _handleResponse(response, url);
     } on SocketException {
-      onSocketException();
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -1,
-        errorMessage: 'Check your network connection and try again later',
-      );
+      return _handleSocketException();
     } catch (e) {
-      print(e);
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -1,
-        errorMessage: e.toString(),
-      );
+      return _handleGenericException(e);
     }
   }
 
@@ -156,45 +61,18 @@ class NetworkClient {
   }) async {
     try {
       Uri uri = Uri.parse(url);
-      Response response = await put(uri, body: jsonEncode(body));
+      _logPreRequest(url, body: body);
 
-      _logger.i(response.body);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var decodedJson = jsonDecode(response.body);
-        return NetworkResponse(
-          isSuccess: true,
-          statusCode: response.statusCode,
-          responseBody: decodedJson,
-        );
-      } else if (response.statusCode == 401) {
-        onUnAuthorize();
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: defaultErrorMessage,
-        );
-      } else {
-        var decodedJaon = jsonDecode(response.body);
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: decodedJaon,
-        );
-      }
+      Response response = await put(
+        uri,
+        headers: commonHeader(),
+        body: jsonEncode(body),
+      );
+      return _handleResponse(response, url);
     } on SocketException {
-      onSocketException();
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -1,
-        errorMessage: 'Check your network connection and try again later',
-      );
+      return _handleSocketException();
     } catch (e) {
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -1,
-        errorMessage: e.toString(),
-      );
+      return _handleGenericException(e);
     }
   }
 
@@ -204,93 +82,105 @@ class NetworkClient {
   }) async {
     try {
       Uri uri = Uri.parse(url);
-      Response response = await patch(uri, body: jsonEncode(body),headers: commonHeader());
+      _logPreRequest(url, body: body);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var decodedJson = jsonDecode(response.body);
-        return NetworkResponse(
-          isSuccess: true,
-          statusCode: response.statusCode,
-          responseBody: decodedJson,
-        );
-      } else if (response.statusCode == 401) {
-        onUnAuthorize();
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: defaultErrorMessage,
-        );
-      } else {
-        var decodedJaon = jsonDecode(response.body);
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: decodedJaon,
-        );
-      }
+      Response response = await patch(
+        uri,
+        headers: commonHeader(),
+        body: jsonEncode(body),
+      );
+      return _handleResponse(response, url);
     } on SocketException {
-      onSocketException();
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -1,
-        errorMessage: 'Check your network connection and try again later',
-      );
+      return _handleSocketException();
     } catch (e) {
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -1,
-        errorMessage: e.toString(),
-      );
+      return _handleGenericException(e);
     }
   }
 
   Future<NetworkResponse> deleteRequest({
     required String url,
-
   }) async {
     try {
       Uri uri = Uri.parse(url);
-      Response response = await delete(uri,headers: commonHeader());
+      _logPreRequest(url);
 
-      _logger.e('Post log ==> ${response.body}');
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var decodedJson = jsonDecode(response.body);
-        return NetworkResponse(
-          isSuccess: true,
-          statusCode: response.statusCode,
-          responseBody: decodedJson,
-        );
-      } else if (response.statusCode == 401) {
-        onUnAuthorize();
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: defaultErrorMessage,
-        );
-      } else {
-        var decodedJson = jsonDecode(response.body);
-        return NetworkResponse(
-          isSuccess: false,
-          statusCode: response.statusCode,
-          errorMessage: decodedJson,
-        );
-      }
+      Response response = await delete(uri, headers: commonHeader());
+      return _handleResponse(response, url);
     } on SocketException {
-      onSocketException();
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -10,
-        errorMessage: 'Check your network connection and try again later',
-      );
+      return _handleSocketException();
     } catch (e) {
-      return NetworkResponse(
-        isSuccess: false,
-        statusCode: -1,
-        errorMessage: e.toString(),
-      );
+      return _handleGenericException(e);
     }
   }
-}
 
-preRequestLog() {}
+
+  void _logPreRequest(String url, {Map<String, dynamic>? body}) {
+    _logger.i('''
+🔵 PRE REQUEST:
+URL: $url
+HEADERS: ${commonHeader()}
+BODY: ${body != null ? jsonEncode(body) : 'null'}
+''');
+  }
+
+  NetworkResponse _handleResponse(Response response, String url) {
+    _logger.i('''
+🟢 RESPONSE:
+URL: $url
+STATUS: ${response.statusCode}
+BODY: ${response.body}
+''');
+
+    final int status = response.statusCode;
+
+    if (status == 200 || status == 201) {
+      final data = jsonDecode(response.body);
+      return NetworkResponse(
+        isSuccess: true,
+        statusCode: status,
+        responseBody: data,
+      );
+    } else if (status == 401 || status == 402 || status == 403) {
+      _logger.e('Unauthorized response: ${response.body}');
+      onUnAuthorize();
+      return NetworkResponse(
+        isSuccess: false,
+        statusCode: status,
+        errorMessage: defaultErrorMessage,
+      );
+    } else {
+      try {
+        final errorData = jsonDecode(response.body);
+        return NetworkResponse(
+          isSuccess: false,
+          statusCode: status,
+          errorMessage: errorData['msg'] ?? defaultErrorMessage,
+        );
+      } catch (_) {
+        return NetworkResponse(
+          isSuccess: false,
+          statusCode: status,
+          errorMessage: defaultErrorMessage,
+        );
+      }
+    }
+  }
+
+  NetworkResponse _handleSocketException() {
+    onSocketException();
+    return NetworkResponse(
+      isSuccess: false,
+      statusCode: -1,
+      errorMessage: 'Check your network connection and try again later',
+    );
+  }
+
+  NetworkResponse _handleGenericException(Object e) {
+    _logger.e('Exception: $e');
+    return NetworkResponse(
+      isSuccess: false,
+      statusCode: -1,
+      errorMessage: e.toString(),
+    );
+  }
+}

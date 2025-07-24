@@ -1,3 +1,4 @@
+import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import '../../../common/loading_widgets/loading_widget.dart';
 import '../../../common/ui/screens/main_bottom_nav_screen.dart';
@@ -38,9 +39,9 @@ class _SplashScreenState extends State<SplashScreen> {
               Spacer(),
               Center(child: AppLogo()),
               Spacer(),
-              LoadingWidget.forScreen(),
+              CenteredCircularProgressIndicator(),
               SizedBox(height: 10),
-              Text('version 1.0.0', style: TextStyle(color: Colors.grey)),
+              Text('version 1.0.2', style: TextStyle(color: Colors.grey)),
             ],
           ),
         ),

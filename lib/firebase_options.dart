@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+            'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -27,17 +30,17 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -46,30 +49,20 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBQTH9j-8gpclM_vdtK8BhO-fkJvBYFOsw',
-    appId: '1:963514549159:web:d04116105360e9cebb6c82',
-    messagingSenderId: '963514549159',
-    projectId: 'sodaimart-421115',
-    authDomain: 'sodaimart-421115.firebaseapp.com',
-    storageBucket: 'sodaimart-421115.firebasestorage.app',
-    measurementId: 'G-P3W2M360ND',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDFDXD1Aq_uAqshADhKlm970Au1hq7qxSM',
-    appId: '1:963514549159:android:fee29cd530f15c3dbb6c82',
-    messagingSenderId: '963514549159',
-    projectId: 'sodaimart-421115',
-    storageBucket: 'sodaimart-421115.firebasestorage.app',
+    apiKey: 'AIzaSyCS5txipgpycDnBz0qVpbOpOD8rvGcZPug',
+    appId: '1:416255438329:android:aee9a3cb7b4f082c50e128',
+    messagingSenderId: '416255438329',
+    projectId: 'crafty-bay-47d05',
+    storageBucket: 'crafty-bay-47d05.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDxEarg7rj4NjY9r8ekvHSSv6Gnayks4No',
-    appId: '1:963514549159:ios:cd151851ff886396bb6c82',
-    messagingSenderId: '963514549159',
-    projectId: 'sodaimart-421115',
-    storageBucket: 'sodaimart-421115.firebasestorage.app',
-    iosBundleId: 'com.example.craftyBayEcommerce',
+    apiKey: 'AIzaSyDNDmXMm4mXJHeq1PHiPvJbY7YA7YOQiSo',
+    appId: '1:416255438329:ios:671dfd782fe642cc50e128',
+    messagingSenderId: '416255438329',
+    projectId: 'crafty-bay-47d05',
+    storageBucket: 'crafty-bay-47d05.firebasestorage.app',
+    iosBundleId: 'com.santorasu.craftyBay',
   );
 }

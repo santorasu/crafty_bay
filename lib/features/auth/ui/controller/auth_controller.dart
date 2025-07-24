@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/models/login_model.dart';
+import '../../data/models/login_request_model.dart';
 
 class AuthController extends GetxController {
   static   UserModel? _userInfo;

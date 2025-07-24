@@ -4,7 +4,7 @@ import 'package:logger/logger.dart';
 import '../../../../app/app.dart';
 import '../../../../app/urls.dart';
 import '../../../../core/service/network/network_client.dart';
-import '../../data/models/registration_request_model.dart';
+import '../../data/models/sign_up_request_model.dart';
 import '../screens/otp_verification_screen.dart';
 
 class RegistrationController extends GetxController {

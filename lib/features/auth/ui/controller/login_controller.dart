@@ -5,7 +5,7 @@ import '../../../../app/app.dart';
 import '../../../../app/urls.dart';
 import '../../../../core/service/network/network_client.dart';
 import '../../../common/ui/screens/main_bottom_nav_screen.dart';
-import '../../data/models/login_model.dart';
+import '../../data/models/login_request_model.dart';
 import 'auth_controller.dart';
 
 class LoginController extends GetxController{
