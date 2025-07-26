@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 import '../../../app/urls.dart';
 import '../../../core/service/network/network_client.dart';
-import '../data/model/product_review_model.dart';
+import '../../reviews/data/model/product_review_model.dart';
 
 class ProductReviewController extends GetxController{
   bool isLoading = false;

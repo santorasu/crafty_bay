@@ -6,12 +6,12 @@ import '../features/auth/ui/screens/splash_screen.dart';
 import '../features/common/ui/screens/main_bottom_nav_screen.dart';
 import '../features/home/ui/screens/home_screen.dart';
 import '../features/products/data/model/category_model.dart';
-import '../features/products/ui/screens/create_review_screen.dart';
+import '../features/reviews/ui/create_review_screen.dart';
 import '../features/products/ui/screens/product_catagory_screen.dart';
-import '../features/products/ui/screens/product_detail_screen.dart';
+import '../features/products/ui/screens/product_details_screen.dart';
 import '../features/products/ui/screens/product_list_by_category_screen.dart';
 import '../features/products/ui/screens/product_list_screen.dart';
-import '../features/products/ui/screens/review_screen.dart';
+import '../features/reviews/ui/review_screen.dart';
 
 class AppRoutes{
   static Route<dynamic> routes (RouteSettings setting) {

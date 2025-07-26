@@ -1,10 +1,9 @@
+import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../../app/app_colors.dart';
-import '../../../common/loading_widgets/loading_widget.dart';
 import '../controller/otp_controller.dart';
-import '../widgets/logo_header.dart';
 import 'package:get/get.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
@@ -32,6 +31,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -40,9 +40,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height / 5.5),
-                LogoHeader(
-                  titleLarge: 'Enter otp code',
-                  titleSmall: 'A 4 digit code has been sent',
+                Text('Verify OTP', style: textTheme.titleLarge),
+                SizedBox(height: 4),
+                Text(
+                  'Please enter your 4 digits OTP sent to your ${widget.email}',
+                  textAlign: TextAlign.center,
+                  style: textTheme.headlineMedium,
                 ),
                 const SizedBox(height: 20),
 
@@ -89,7 +92,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     builder: (controller) {
                       return Visibility(
                         visible: controller.isLoading == false,
-                        replacement: LoadingWidget.forButton(),
+                        replacement: CenteredCircularProgressIndicator(),
                         child: Text('Next'),
                       );
                     },

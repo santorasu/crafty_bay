@@ -8,8 +8,7 @@ import '../features/auth/ui/controller/main_bottom_nav_controller.dart';
 import '../features/auth/ui/controller/otp_controller.dart';
 import '../features/auth/ui/controller/registration_controller.dart';
 import '../features/auth/ui/screens/login_screen.dart';
-import '../features/cert/controller/get_cart_product_controller.dart';
-import '../features/checkout/data/model/place_order_controller.dart';
+import '../features/cart/controller/get_cart_product_controller.dart';
 import '../features/home/controller/home_slider_controller.dart';
 import '../features/products/controller/add_cart_controller.dart';
 import '../features/products/controller/color_controller.dart';
@@ -61,7 +60,7 @@ class ControllerBinder extends Bindings {
     Get.put(WishListController());
     Get.put(AddToWishListController());
     //Get.put(PaymentController());
-    Get.put(PlaceOrderController());
+    // Get.put(PlaceOrderController());
   }
 }
 

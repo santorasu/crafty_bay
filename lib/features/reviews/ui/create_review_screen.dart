@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../../app/app_colors.dart';
-import '../../../common/loading_widgets/loading_widget.dart';
-import '../../controller/create_review_controller.dart';
+import '../../../app/app_colors.dart';
+import '../../../core/ui/widgets/centered_circular_progress_indicator.dart';
+import '../../products/controller/create_review_controller.dart';
 
 class CreateReviewScreen extends StatefulWidget {
   const CreateReviewScreen({super.key, required this.id});
@@ -16,6 +15,8 @@ class CreateReviewScreen extends StatefulWidget {
 }
 
 class _CreateReviewScreenState extends State<CreateReviewScreen> {
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _reviewTeController = TextEditingController();
   final GlobalKey<FormState> _formKey  = GlobalKey<FormState>();
   final CreateReviewController controller =Get.find<CreateReviewController>();
@@ -36,6 +37,8 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
           'Create Review',
           style: TextStyle(fontWeight: FontWeight.normal),
         ),
+        centerTitle: true,
+        backgroundColor: AppColors.themColor.shade600,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -43,19 +46,34 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
           key: _formKey,
           child: Column(
             children: [
-              SizedBox(height: 50),
-              GetBuilder<CreateReviewController>(
-                builder: (controller) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(5, (i){return GestureDetector(onTap: ()=> controller.ratingHandler(i), child: Icon(Icons.star,size: 50,color: controller.selectedIndex >= i ?AppColors.themColor:Colors.black45 ,));}).map((e)=> e).toList(),
-                  );
-                }
-              ),
-              SizedBox(height: 30),
-
+              SizedBox(height: 8),
               TextFormField(
+                controller: _firstNameController,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(hintText: "First Name"),
+                validator: (String? value) {
+                  if (value?.trim().isEmpty ?? true) {
+                    return 'Enter a valid First Name';
+                  }
+                  return null;
+                },
+              ),
 
+              SizedBox(height: 18),
+              TextFormField(
+                controller: _lastNameController,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                    hintText: "Last Name"),
+                validator: (String? value) {
+                  if (value?.trim().isEmpty ?? true) {
+                    return 'Enter a valid Last Name';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 18),
+              TextFormField(
                 validator: (value){
                   if(value == null || value.isEmpty){
                     return 'Enter your comment';
@@ -66,12 +84,13 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                 maxLines: 6,
                 decoration: InputDecoration(hintText: 'Write Review'),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 18),
+
               ElevatedButton(
                 onPressed:()=> _onTapSubmitReview(),
                 child: Visibility(
                   visible: controller.isLoading == false,
-                  replacement:  LoadingWidget.forButton(),
+                  replacement: CenteredCircularProgressIndicator(),
                   child: Text(
                     'Submit',
                     style: TextStyle(fontWeight: FontWeight.normal),
@@ -103,7 +122,7 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
         Get.snackbar('Thank you', 'your opinion is more valuable for us');
       }
     }
-
+Navigator.pop(context);
   }
 
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../app/app_colors.dart';
 import '../../../../app/assets_path.dart';
-import '../../../products/ui/screens/product_detail_screen.dart';
+import '../../../products/ui/screens/product_details_screen.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
@@ -34,7 +34,7 @@ class ProductCard extends StatelessWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.5), // softer shadow
+              color: Colors.black.withOpacity(0.5),
               blurRadius: 2,
               offset: const Offset(0, 0.5),
             ),

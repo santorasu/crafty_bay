@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-
-import '../../../common/loading_widgets/loading_widget.dart';
+import '../../../../core/ui/widgets/centered_circular_progress_indicator.dart';
 import '../../../common/ui/widgets/product_card.dart';
 import '../../controller/new_prduct_controller.dart';
 import '../../controller/popular_product_controller.dart';
@@ -31,11 +30,7 @@ class _ProductList extends State<ProductListScreen> {
   }
 
   void loadMoreData() {
-    if (_scrollController.position.extentAfter < 50) {
-      // Get.find<ProductListByCategoryController>().getProductList(
-      //   categoryId: widget.category.id,
-      // );
-    }
+    if (_scrollController.position.extentAfter < 50) {}
   }
 
   @override
@@ -46,78 +41,68 @@ class _ProductList extends State<ProductListScreen> {
           onPressed: _onTapBack,
           icon: Icon(Icons.arrow_back_ios_new),
         ),
-        title: Text(
-          widget.tag,
-          style: TextTheme.of(context).headlineSmall,
-        ),
+        title: Text(widget.tag, style: TextTheme.of(context).headlineSmall),
       ),
       body: GetBuilder(
         init: _controller,
         builder: (_) {
           return Visibility(
             visible: _controller.isLoading == false,
-            replacement: Center(child: LoadingWidget.forScreen()),
-            child:
-              _controller.productList.isEmpty
-                    ? Center(child: Text('No product on this category'))
-                    : Column(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: GridView.builder(
-                              controller: _scrollController,
-                              itemCount: _controller.productList.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    mainAxisSpacing: 16,
-                                  ),
-                              itemBuilder: ((BuildContext context, int index) {
-                                Logger().w(
-                                  _controller.productList.length,
-                                );
+            replacement: Center(child: CenteredCircularProgressIndicator()),
+            child: _controller.productList.isEmpty
+                ? Center(child: Text('No product on this category'))
+                : Column(
+                    children: [
+                      Expanded(
+                        child: GridView.builder(
+                          controller: _scrollController,
+                          itemCount: _controller.productList.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                mainAxisSpacing: 8,
+                                crossAxisSpacing: 8,
+                                childAspectRatio: 0.7,
+                              ),
+                          itemBuilder: ((BuildContext context, int index) {
+                            Logger().w(_controller.productList.length);
 
-                                var controller =
-                                  _controller.productList[index];
-                                return FittedBox(
-                                  child: ProductCard(
-                                    id:  controller.id,
-                                    imageUrl:
-                                        controller.imageUrl.isNotEmpty
-                                            ? controller.imageUrl.first
-                                            : null,
-                                    title: controller.name,
-                                    price: controller.price,
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
+                            var controller = _controller.productList[index];
+                            return FittedBox(
+                              child: ProductCard(
+                                id: controller.id,
+                                imageUrl: controller.imageUrl.isNotEmpty
+                                    ? controller.imageUrl.first
+                                    : null,
+                                title: controller.name,
+                                price: controller.price,
+                              ),
+                            );
+                          }),
                         ),
-                        _controller.isLoading
-                            ? LinearProgressIndicator()
-                            : SizedBox.shrink(),
-                      ],
-                    ),
+                      ),
+                      _controller.isLoading
+                          ? LinearProgressIndicator()
+                          : SizedBox.shrink(),
+                    ],
+                  ),
           );
         },
       ),
     );
   }
 
- dynamic sourceCheck(){
-    if(widget.tag.toLowerCase() == 'new'){
-     return  Get.find<NewProductController>();
-    }else if(widget.tag.toLowerCase() == 'special'){
-      return  Get.find<SpecialProductController>();
-    }else if(widget.tag.toLowerCase() == 'popular'){
-      return  Get.find<PopularProductController>();
-    }else {
-      return  Get.find<NewProductController>();
+  dynamic sourceCheck() {
+    if (widget.tag.toLowerCase() == 'new') {
+      return Get.find<NewProductController>();
+    } else if (widget.tag.toLowerCase() == 'special') {
+      return Get.find<SpecialProductController>();
+    } else if (widget.tag.toLowerCase() == 'popular') {
+      return Get.find<PopularProductController>();
+    } else {
+      return Get.find<NewProductController>();
     }
   }
-
 
   _onTapBack() {
     Navigator.pop(context);

@@ -1,11 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:crafty_bay/features/products/ui/screens/review_screen.dart';
+import 'package:crafty_bay/features/reviews/ui/review_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../app/app_colors.dart';
+import '../../../../core/ui/widgets/centered_circular_progress_indicator.dart';
 import '../../../auth/ui/controller/auth_controller.dart';
 import '../../../auth/ui/screens/login_screen.dart';
-import '../../../common/loading_widgets/loading_widget.dart';
 import '../../../wish_list/controller/add_to_wish_list_controller.dart';
 import '../../controller/add_cart_controller.dart';
 import '../../controller/color_controller.dart';
@@ -13,7 +13,7 @@ import '../../controller/current_slide_indicator_controller.dart';
 import '../../controller/prodct_quantity_controller.dart';
 import '../../controller/product_details_controller.dart';
 import '../../controller/product_size_controller.dart';
-import '../widgets/product_name_and_quantity_section.dart';
+import '../widgets/inc_dec_button.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({required this.id, super.key});
@@ -49,10 +49,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           builder: (controller) {
             return Visibility(
               visible: controller.isLoading == false,
-              replacement: Center(child: LoadingWidget.forScreen()),
+              replacement: Center(child: CenteredCircularProgressIndicator()),
               child:
                   controller.productData == null
-                      ? Center(child: Text('Maybe its a dummy product'))
+                      ? Center(child: Text('Something went wrong'))
                       : SingleChildScrollView(
                         child: Column(
                           children: [
@@ -66,7 +66,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ProductNameAndQuantitySection(),
+                                  IncDecButton(),
                                   const SizedBox(height: 10),
                                   buildReviewSection(widget.id),
                                   const SizedBox(height: 10),
