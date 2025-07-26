@@ -1,41 +1,33 @@
-import 'package:crafty_bay/app/urls.dart';
-import 'package:crafty_bay/core/services/network/network_client.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
-import '../data/models/product_details_model.dart';
+import '../../../app/urls.dart';
+import '../../../core/service/network/network_client.dart';
+import '../data/model/product_model.dart';
 
 class ProductDetailsController extends GetxController {
-  bool _inProgress = false;
+  bool isLoading = false;
 
-  String? _errorMessage;
+  ProductModel? productData;
 
-  bool get inProgress => _inProgress;
-
-  String? get errorMessage => _errorMessage;
-
-  late ProductDetailsModel _productDetails;
-
-  ProductDetailsModel get productDetails => _productDetails;
-
-  Future<bool> getProductDetails(String id) async {
-    bool isSuccess = false;
-    _inProgress = true;
+  Future<void> getProduct(id) async {
+    isLoading = true;
     update();
-    final NetworkResponse response = await Get.find<NetworkClient>().getRequest(
-      Urls.productDetailsUrl(id),
+
+    productData = null;
+
+    NetworkResponse response = await Get.find<NetworkClient>().getRequest(
+      url: Urls.productDetailsUrl(id: id),
     );
-    if (response.isSuccess) {
-      _productDetails =
-          ProductDetailsModel.fromJson(response.responseData!['data']);
-      isSuccess = true;
-      _errorMessage = null;
-    } else {
-      _errorMessage = response.errorMessage!;
+
+    if(response.statusCode == 200 || response.statusCode == 201){
+      productData = ProductModel.fromJson(response.responseBody!['data']);
+      update();
+
+      Logger().t(productData!.sizes);
     }
 
-    _inProgress = false;
+    isLoading = false;
     update();
-
-    return isSuccess;
   }
 }
