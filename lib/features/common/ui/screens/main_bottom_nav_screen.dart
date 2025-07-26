@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../auth/ui/controller/auth_controller.dart';
 import '../../../auth/ui/controller/main_bottom_nav_controller.dart';
-import '../../../cert/screens/cart_checkout_screen.dart';
+import '../../../cart/screens/cart_screen.dart';
 import '../../../home/controller/home_slider_controller.dart';
 import '../../../home/ui/screens/home_screen.dart';
 import '../../../products/controller/new_prduct_controller.dart';
@@ -45,7 +45,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   List<Widget> screens = [
     HomeScreen(),
     ProductCategoryScreen(),
-    CartCheckOutScreen(),
+    CartScreen(),
     WishListScreen(),
   ];
 

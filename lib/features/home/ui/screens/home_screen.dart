@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../../../app/assets_path.dart';
+import '../../../../core/ui/widgets/centered_circular_progress_indicator.dart';
 import '../../../auth/ui/controller/main_bottom_nav_controller.dart';
-import '../../../common/loading_widgets/loading_widget.dart';
 import '../../../common/ui/widgets/catagory_card.dart';
 import '../../../common/ui/widgets/product_card.dart';
 import '../../../products/controller/new_prduct_controller.dart';
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(10),
             child: Column(
               children: [
-                BuildSearchSection(),
+                ProductSearchBar(),
                 const SizedBox(height: 20),
                 HomeCarousalSlider(),
                 const SizedBox(height: 20),
@@ -50,15 +50,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: _onTapToSeeAllCategories,
                 ),
                 const SizedBox(height: 10),
-                buildCategorySection(),
-                HomeScreenSectionHeader(header: 'Popular', onTap: _onTapToSeeAllPopularProduct,),
-                const SizedBox(height: 5),
-                getPopularProduct(),
-                HomeScreenSectionHeader(header: 'Special', onTap: _onTapToSeeAlSpecialProduct, ),
+                getCategoryList(),
+                //HomeScreenSectionHeader(header: 'Popular', onTap: _onTapToSeeAllPopularProduct,),
+                //  const SizedBox(height: 10),
+                //  getPopularProduct(),
+                //  HomeScreenSectionHeader(header: 'Special', onTap: _onTapToSeeAlSpecialProduct, ),
+                // const SizedBox(height: 10),
+                // getSpecialProduct(),
                 const SizedBox(height: 10),
-                getSpecialProduct(),
-                const SizedBox(height: 5),
-                HomeScreenSectionHeader(header: 'New',onTap: _onTapToSeeAlNewProduct,),
+                HomeScreenSectionHeader(
+                  header: 'New',
+                  onTap: _onTapToSeeAlNewProduct,
+                ),
                 const SizedBox(height: 10),
                 getNewProduct(),
               ],
@@ -69,14 +72,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildCategorySection() {
+  Widget getCategoryList() {
     return GetBuilder<ProductCategoryController>(
       builder: (categoryController) {
         return Visibility(
           visible:
               categoryController.isLoading == false &&
               categoryController.isInitialLoading == false,
-          replacement: LoadingWidget.forCategoryCardShimmer(),
+          replacement: CenteredCircularProgressIndicator(),
           child: SizedBox(
             height: 115,
             child: ListView.separated(
@@ -97,11 +100,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               }),
-              separatorBuilder: ((_, _) => SizedBox(width: 20)),
-              itemCount:
-                  categoryController.categoryList.length > 10
-                      ? 10
-                      : categoryController.categoryList.length,
+              separatorBuilder: ((_, _) => SizedBox(width: 10)),
+              itemCount: categoryController.categoryList.length > 10
+                  ? 10
+                  : categoryController.categoryList.length,
             ),
           ),
         );
@@ -128,22 +130,23 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (controller) {
         return Visibility(
           visible: controller.isLoading == false,
-          replacement: LoadingWidget.forProductCardShimmerHorizontalAxis(),
+          replacement: CenteredCircularProgressIndicator(),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               spacing: 10,
-              children:
-                  controller.popularProductList.asMap().entries.map((e) {
-                    int index = e.key;
-                    var value = e.value;
-                    return ProductCard(
-                      id: index.toString(),
-                      title: value.name,
-                      price: value.price,
-                      imageUrl: value.imageUrl.isNotEmpty ? value.imageUrl.first : null,
-                    );
-                  }).toList(),
+              children: controller.popularProductList.asMap().entries.map((e) {
+                int index = e.key;
+                var value = e.value;
+                return ProductCard(
+                  id: index.toString(),
+                  title: value.name,
+                  price: value.price,
+                  imageUrl: value.imageUrl.isNotEmpty
+                      ? value.imageUrl.first
+                      : null,
+                );
+              }).toList(),
             ),
           ),
         );
@@ -156,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (controller) {
         return Visibility(
           visible: controller.isLoading == false,
-          replacement: LoadingWidget.forProductCardShimmerHorizontalAxis(),
+          replacement: CenteredCircularProgressIndicator(),
           child: SizedBox(
             height: ProductCard.height,
             child: ListView.separated(
@@ -165,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: ((BuildContext context, int index) {
                 var item = controller.specialProductList[index];
                 return ProductCard(
-                  id:  item.id,
+                  id: item.id,
                   title: item.name,
                   price: item.price,
                   imageUrl: item.imageUrl.first,
@@ -183,8 +186,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return GetBuilder<NewProductController>(
       builder: (controller) {
         return Visibility(
-          visible:  controller.isLoading == false,
-          replacement:  LoadingWidget.forProductCardShimmerHorizontalAxis(),
+          visible: controller.isLoading == false,
+          replacement: CenteredCircularProgressIndicator(),
           child: SizedBox(
             height: ProductCard.height,
             child: ListView.separated(
@@ -193,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: ((BuildContext context, int index) {
                 var item = controller.newProductList[index];
                 return ProductCard(
-                  id:  item.id,
+                  id: item.id,
                   title: item.name,
                   price: item.price,
                   imageUrl: item.imageUrl.first,
@@ -206,16 +209,20 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
   _onTapToSeeAllCategories() {
     mainBottomNavController.gotoCategoryScreen();
   }
-  _onTapToSeeAllPopularProduct(){
+
+  _onTapToSeeAllPopularProduct() {
     Navigator.pushNamed(context, ProductListScreen.name, arguments: 'Popular');
   }
-  _onTapToSeeAlNewProduct(){
+
+  _onTapToSeeAlNewProduct() {
     Navigator.pushNamed(context, ProductListScreen.name, arguments: 'New');
   }
-  _onTapToSeeAlSpecialProduct(){
+
+  _onTapToSeeAlSpecialProduct() {
     Navigator.pushNamed(context, ProductListScreen.name, arguments: 'Special');
   }
 }

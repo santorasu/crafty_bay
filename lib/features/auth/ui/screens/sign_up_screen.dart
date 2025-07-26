@@ -1,10 +1,9 @@
+import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../common/loading_widgets/loading_widget.dart';
 import '../../data/models/sign_up_request_model.dart';
 import '../controller/registration_controller.dart';
-import '../widgets/logo_header.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -30,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -40,9 +40,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height / 20),
-                  LogoHeader(
-                    titleLarge: 'Sign Up',
-                    titleSmall: 'Get started with us with your details',
+                  Text('Register Account', style: textTheme.titleLarge),
+                  SizedBox(height: 4),
+                  Text(
+                    'Please enter your details to sign up',
+                    style: textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
@@ -127,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       builder: (controller) {
                         return Visibility(
                             visible: Get.find<RegistrationController>().isLoading == false,
-                            replacement: LoadingWidget.forButton(),
+                            replacement: CenteredCircularProgressIndicator(),
                             child: Text('SignUp'));
                       }
                     ),

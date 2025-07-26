@@ -1,9 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../../app/app_colors.dart';
-import '../../../common/loading_widgets/loading_widget.dart';
+import '../../../../core/ui/widgets/centered_circular_progress_indicator.dart';
 import '../../controller/home_slider_controller.dart';
 class HomeCarousalSlider extends StatefulWidget {
   const HomeCarousalSlider({
@@ -28,7 +27,7 @@ class _HomeCarousalSliderState extends State<HomeCarousalSlider> {
       builder: (controller) {
         return Visibility(
           visible: controller.isLoading == false,
-          replacement:  LoadingWidget.forHomeCarouselShimmer(),
+          replacement:  CenteredCircularProgressIndicator(),
           child: Column(
             children: [
               CarouselSlider(

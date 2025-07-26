@@ -1,10 +1,8 @@
 import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:crafty_bay/features/auth/ui/screens/sign_up_screen.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../app/app_colors.dart';
 import '../controller/login_controller.dart';
 import '../widgets/app_logo.dart';
 
@@ -21,7 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -93,21 +90,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 16),
 
-                  RichText(
-                    text: TextSpan(
-                      text: 'Don\'t have and account? ',
-                      style: TextStyle(color: Colors.black),
-                      children: [
-                        TextSpan(
-                          text: 'Sign up',
-                          style: TextStyle(color: AppColors.themColor,decoration: TextDecoration.underline),
-                          recognizer: TapGestureRecognizer()..onTap=(){
-                            Navigator.pushNamed(context, RegisterScreen.name);
-                          }
-
-                        ),
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Don\'t have an account?'),
+                      SizedBox(width: 4),
+                      TextButton(
+                        onPressed: _onTapSignUpButton,
+                        child: Text('Sign UP'),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -119,12 +111,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _onTapLogIn() async {
-   if( _formKey.currentState!.validate()){
-    await Get.find<LoginController>().login(
-         email: _emailController.text.trim(),
-         password: _passwordController.text
-     );
-   }
+    if (_formKey.currentState!.validate()) {
+      await Get.find<LoginController>().login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+    }
+  }
 
+  _onTapSignUpButton() {
+    Navigator.pushNamed(context, RegisterScreen.name);
   }
 }

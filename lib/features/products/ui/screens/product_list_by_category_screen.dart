@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../common/loading_widgets/loading_widget.dart';
+import '../../../../core/ui/widgets/centered_circular_progress_indicator.dart';
 import '../../../common/ui/widgets/product_card.dart';
 import '../../controller/product_list_by_category_controller.dart';
 import '../../data/model/category_model.dart';
@@ -54,7 +54,7 @@ class _ProductListByCategoryScreenState extends State<ProductListByCategoryScree
         builder: (productController) {
           return Visibility(
             visible: productController.isInitialLoading == false,
-            replacement: Center(child: LoadingWidget.forScreen()),
+            replacement: Center(child: CenteredCircularProgressIndicator()),
             child:
                 productController.productList.isEmpty
                     ? Center(child: Text('No product on this category'))

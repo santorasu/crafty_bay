@@ -1,6 +1,5 @@
 import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:flutter/material.dart';
-import '../../../common/loading_widgets/loading_widget.dart';
 import '../../../common/ui/screens/main_bottom_nav_screen.dart';
 import '../widgets/app_logo.dart';
 

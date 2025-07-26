@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-class BuildSearchSection extends StatelessWidget {
-  const BuildSearchSection({
+class ProductSearchBar extends StatelessWidget {
+  const ProductSearchBar({
     super.key,
   });
 

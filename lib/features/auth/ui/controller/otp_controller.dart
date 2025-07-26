@@ -9,40 +9,32 @@ import '../screens/login_screen.dart';
 class OtpController extends GetxController {
   bool isLoading = false;
   int otpValidity = 10;
-
   String? userEmail;
-
   Future<void> verifyOtp({required String email, required String otp}) async {
     isLoading = true;
     update();
-
     userEmail = email;
-
-    Map<String, dynamic> responseBody = {
-      "email": email,
-      "otp": otp, // static
-    };
-
+    Map<String, dynamic> responseBody = {"email": email, "otp": otp};
     String url = Urls.verifyOtpUrl;
-
     NetworkResponse response = await Get.find<NetworkClient>().postRequest(
       url: url,
       body: responseBody,
     );
-
     if (response.statusCode == 200 || response.statusCode == 201) {
-      Get.snackbar('Welcome..!', "Successfully verified email address");
+      Get.snackbar(
+        'Welcome to Crafty Bay',
+        "Successfully verified email address",
+      );
       navigatorKey.currentState?.pushNamedAndRemoveUntil(
         LoginScreen.name,
         (predicate) => false,
       );
     } else {
-      Get.snackbar('Sorry..!', response.errorMessage!);
+      Get.snackbar('Sorry can not verify', response.errorMessage!);
     }
     isLoading = false;
     update();
   }
-
   countOtp() async {
     Timer.periodic(Duration(seconds: 1), (time) {
       if (otpValidity > 0) {
@@ -54,14 +46,12 @@ class OtpController extends GetxController {
       }
     });
   }
-
   resendOtp() {
     otpValidity = 120;
     update();
     countOtp();
     tryResendOtp();
   }
-
   Future<void> tryResendOtp() async {
     try {
       if (userEmail != null) {
@@ -69,15 +59,14 @@ class OtpController extends GetxController {
           url: Urls.resendOtpUrl,
           body: {"email": userEmail},
         );
-
         if (response.statusCode == 200 || response.statusCode == 201) {
-          Get.snackbar('Awesome', 'A 4 digit otp send on your email');
+          Get.snackbar('Your otp has been sent', 'Please check your email');
         } else {
-          Get.snackbar('Sorry', response.errorMessage!);
+          Get.snackbar('Sorry can not send', response.errorMessage!);
         }
       }
     } catch (e) {
-      Get.snackbar('Warning', e.toString());
+      Get.snackbar('Wait a moment', e.toString());
     }
   }
 }
