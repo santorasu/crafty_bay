@@ -1,42 +1,52 @@
-import 'package:crafty_bay/features/auth/ui/screens/login_screen.dart';
-import 'package:crafty_bay/features/auth/ui/screens/sign_up_screen.dart';
-import 'package:crafty_bay/features/auth/ui/screens/verify_otp_screen.dart';
-import 'package:crafty_bay/features/common/models/category_model.dart';
-import 'package:crafty_bay/features/common/ui/screens/main_bottom_nav_screen.dart';
-import 'package:crafty_bay/features/products/ui/screens/product_details_screen.dart';
-import 'package:crafty_bay/features/products/ui/screens/product_list_screen.dart';
-import 'package:crafty_bay/features/reviews/ui/screens/reviews_screen.dart';
 import 'package:flutter/material.dart';
-
+import '../features/auth/ui/screens/login_screen.dart';
+import '../features/auth/ui/screens/otp_verification_screen.dart';
+import '../features/auth/ui/screens/sign_up_screen.dart';
 import '../features/auth/ui/screens/splash_screen.dart';
-import '../features/reviews/ui/screens/create_review_screen.dart';
+import '../features/common/ui/screens/main_bottom_nav_screen.dart';
+import '../features/home/ui/screens/home_screen.dart';
+import '../features/products/data/model/category_model.dart';
+import '../features/reviews/ui/create_review_screen.dart';
+import '../features/products/ui/screens/product_catagory_screen.dart';
+import '../features/products/ui/screens/product_details_screen.dart';
+import '../features/products/ui/screens/product_list_by_category_screen.dart';
+import '../features/products/ui/screens/product_list_screen.dart';
+import '../features/reviews/ui/review_screen.dart';
 
-class AppRoutes {
-  static Route<dynamic> routes(RouteSettings settings) {
-    late final Widget screenWidget;
-
-    if (settings.name == SplashScreen.name) {
-      screenWidget = SplashScreen();
-    } else if (settings.name == LoginScreen.name) {
-      screenWidget = LoginScreen();
-    } else if (settings.name == SignUpScreen.name) {
-      screenWidget = SignUpScreen();
-    } else if (settings.name == MainBottomNavScreen.name) {
-      screenWidget = MainBottomNavScreen();
-    } else if (settings.name == ProductListScreen.name) {
-      final CategoryModel category = settings.arguments as CategoryModel;
-      screenWidget = ProductListScreen(category: category);
-    } else if (settings.name == ProductDetailsScreen.name) {
-      final String productId = settings.arguments as String;
-      screenWidget = ProductDetailsScreen(productId: productId);
-    } else if (settings.name == VerifyOtpScreen.name) {
-      final String email = settings.arguments as String;
-      screenWidget = VerifyOtpScreen(email: email);
-    } else if (settings.name == ReviewsScreen.name) {
-      screenWidget = ReviewsScreen();
-    } else if (settings.name == CreateReviewScreen.name) {
-      screenWidget = CreateReviewScreen();
+class AppRoutes{
+  static Route<dynamic> routes (RouteSettings setting) {
+    late final Widget screenWidgets;
+    if (setting.name == SplashScreen.name) {
+      screenWidgets = SplashScreen();
+    }else if(setting.name == LoginScreen.name){
+      screenWidgets = LoginScreen();
+    }else if (setting.name == RegisterScreen.name){
+      screenWidgets = RegisterScreen();
+    }else if (setting.name == OtpVerificationScreen.name){
+      String? email = setting.arguments as String?;
+      screenWidgets = OtpVerificationScreen(email: email??'null',);
+    }else if (setting.name == HomeScreen.name){
+      screenWidgets = HomeScreen();
+    }else if (setting.name == ProductCategoryScreen.name){
+      screenWidgets = ProductCategoryScreen();
+    }else if(setting.name == MainBottomNavScreen.name){
+      screenWidgets = MainBottomNavScreen();
+    }else if (setting.name == ProductListByCategoryScreen.name){
+      final CategoryModel category = setting.arguments as CategoryModel;
+      screenWidgets = ProductListByCategoryScreen(category: category);
+    }else if(setting.name == ProductDetailScreen.name){
+      final _id = setting.arguments as String;
+      screenWidgets = ProductDetailScreen(id:  _id,);
+    }else if (setting.name == ReviewScreen.name){
+      String id = setting.arguments as String;
+      screenWidgets = ReviewScreen(id: id);
+    }else if (setting.name == CreateReviewScreen.name){
+      String id = setting.arguments as String;
+      screenWidgets = CreateReviewScreen(id: id,);
+    }else if (setting.name == ProductListScreen.name){
+      final _tag = setting.arguments as String;
+      screenWidgets = ProductListScreen(tag: _tag);
     }
-    return MaterialPageRoute(builder: (context) => screenWidget);
+    return MaterialPageRoute(builder: (context) => screenWidgets);
   }
 }

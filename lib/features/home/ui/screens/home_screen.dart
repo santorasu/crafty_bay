@@ -1,87 +1,109 @@
-import 'package:crafty_bay/app/asset_paths.dart';
-import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
-import 'package:crafty_bay/features/common/controllers/category_list_controller.dart';
-import 'package:crafty_bay/features/common/ui/controllers/main_bottom_nav_controller.dart';
-import 'package:crafty_bay/features/home/ui/controller/popular_product_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
+import '../../../../app/assets_path.dart';
+import '../../../../core/ui/widgets/centered_circular_progress_indicator.dart';
+import '../../../auth/ui/controller/main_bottom_nav_controller.dart';
+import '../../../common/ui/widgets/catagory_card.dart';
 import '../../../common/ui/widgets/product_card.dart';
-import '../../../common/ui/widgets/product_category_item.dart';
-import '../controller/home_slider_controller.dart';
-import '../widgets/app_bar_icon_button.dart';
-import '../widgets/home_carousel_slider.dart';
-import '../widgets/product_search_bar.dart';
+import '../../../products/controller/new_prduct_controller.dart';
+import '../../../products/controller/popular_product_controller.dart';
+import '../../../products/controller/product_ catagory_controller.dart';
+import '../../../products/controller/special_product_controller.dart';
+import '../../../products/ui/screens/product_list_by_category_screen.dart';
+import '../../../products/ui/screens/product_list_screen.dart';
+import '../widgets/app_bar_action_button.dart';
+import '../widgets/build_search_section.dart';
+import '../widgets/home_carousal_slider.dart';
+import '../widgets/home_screen_section_header.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  static final String name = '/home';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  MainBottomNavController mainBottomNavController =
+      Get.find<MainBottomNavController>();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              ProductSearchBar(),
-              const SizedBox(height: 16),
-              GetBuilder<HomeSliderController>(
-                builder: (sliderController) {
-                  if (sliderController.inProgress) {
-                    return SizedBox(
-                      height: 192,
-                      child: CenteredCircularProgressIndicator(),
-                    );
-                  }
-                  return HomeCarouselSlider(
-                    sliders: sliderController.sliderModelList,
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildSectionHeader(
-                title: 'Categories',
-                onTapSeeAll: () {
-                  Get.find<MainBottomNavController>().moveToCategory();
-                },
-              ),
-              _getCategoryList(),
-              _buildSectionHeader(title: 'Popular', onTapSeeAll: () {}),
-              _getPopularProducts(),
-              _buildSectionHeader(title: 'Special', onTapSeeAll: () {}),
-              _getSpecialProducts(),
-              _buildSectionHeader(title: 'New', onTapSeeAll: () {}),
-              _getNewProducts(),
-              SizedBox(height: 8),
-            ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: _buildAppBar(),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                ProductSearchBar(),
+                const SizedBox(height: 20),
+                HomeCarousalSlider(),
+                const SizedBox(height: 20),
+                HomeScreenSectionHeader(
+                  header: 'All Categories',
+                  onTap: _onTapToSeeAllCategories,
+                ),
+                const SizedBox(height: 10),
+                getCategoryList(),
+                //HomeScreenSectionHeader(header: 'Popular', onTap: _onTapToSeeAllPopularProduct,),
+                //  const SizedBox(height: 10),
+                //  getPopularProduct(),
+                //  HomeScreenSectionHeader(header: 'Special', onTap: _onTapToSeeAlSpecialProduct, ),
+                // const SizedBox(height: 10),
+                // getSpecialProduct(),
+                const SizedBox(height: 10),
+                HomeScreenSectionHeader(
+                  header: 'New',
+                  onTap: _onTapToSeeAlNewProduct,
+                ),
+                const SizedBox(height: 10),
+                getNewProduct(),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _getPopularProducts() {
-    return GetBuilder<PopularProductController>(
-      builder: (popularProductController) {
+  Widget getCategoryList() {
+    return GetBuilder<ProductCategoryController>(
+      builder: (categoryController) {
         return Visibility(
-          visible: popularProductController.inProgress == false,
+          visible:
+              categoryController.isLoading == false &&
+              categoryController.isInitialLoading == false,
           replacement: CenteredCircularProgressIndicator(),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              spacing: 8,
-              children: popularProductController.productModelList
-                  .map((product) => ProductCard(productModel: product))
-                  .toList(),
+          child: SizedBox(
+            height: 115,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: ((BuildContext context, int index) {
+                var controller = categoryController.categoryList[index];
+                return GestureDetector(
+                  onTap: () async {
+                    Navigator.pushNamed(
+                      context,
+                      ProductListByCategoryScreen.name,
+                      arguments: categoryController.categoryList[index],
+                    );
+                  },
+                  child: CategoryCard(
+                    imageUrl: controller.icon,
+                    categoryName: controller.title,
+                  ),
+                );
+              }),
+              separatorBuilder: ((_, _) => SizedBox(width: 10)),
+              itemCount: categoryController.categoryList.length > 10
+                  ? 10
+                  : categoryController.categoryList.length,
             ),
           ),
         );
@@ -89,76 +111,118 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _getSpecialProducts() {
-    return SizedBox(
-      height: 185,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          //  return ProductCard();
-        },
-        separatorBuilder: (context, index) {
-          return SizedBox(width: 8);
-        },
-        itemCount: 10,
-      ),
-    );
-  }
-
-  Widget _getNewProducts() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        spacing: 8,
-        // children: [1, 2, 3, 4].map((e) => ProductCard()).toList(),
-      ),
-    );
-  }
-
-  AppBar buildAppBar() {
+  AppBar _buildAppBar() {
     return AppBar(
-      title: SvgPicture.asset(AssetPaths.navAppLogoSvg),
+      title: SvgPicture.asset(AssetsPath.navLogoSvg),
       actions: [
-        AppBarIconButton(iconData: Icons.person, onTap: () {}),
-        AppBarIconButton(iconData: Icons.call, onTap: () {}),
-        AppBarIconButton(iconData: Icons.notifications, onTap: () {}),
+        appBarActionButton(onPressed: () {}, icon: Icons.person_2_outlined),
+        appBarActionButton(onPressed: () {}, icon: Icons.call_outlined),
+        appBarActionButton(
+          onPressed: () {},
+          icon: Icons.notifications_active_outlined,
+        ),
       ],
     );
   }
 
-  Widget _buildSectionHeader({
-    required String title,
-    required VoidCallback onTapSeeAll,
-  }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(title, style: Theme.of(context).textTheme.titleSmall),
-        TextButton(onPressed: onTapSeeAll, child: Text('See all')),
-      ],
-    );
-  }
-
-  Widget _getCategoryList() {
-    return SizedBox(
-      height: 100,
-      child: GetBuilder<CategoryListController>(
-        builder: (controller) {
-          if (controller.initialLoadingInProgress) {
-            return CenteredCircularProgressIndicator();
-          }
-          return ListView.separated(
+  Widget getPopularProduct() {
+    return GetBuilder<PopularProductController>(
+      builder: (controller) {
+        return Visibility(
+          visible: controller.isLoading == false,
+          replacement: CenteredCircularProgressIndicator(),
+          child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            itemCount: controller.homeCategoryListItemLength,
-            itemBuilder: (context, index) {
-              return ProductCategoryItem(
-                categoryModel: controller.categoryModelList[index],
-              );
-            },
-            separatorBuilder: (context, index) => const SizedBox(width: 8),
-          );
-        },
-      ),
+            child: Row(
+              spacing: 10,
+              children: controller.popularProductList.asMap().entries.map((e) {
+                int index = e.key;
+                var value = e.value;
+                return ProductCard(
+                  id: index.toString(),
+                  title: value.name,
+                  price: value.price,
+                  imageUrl: value.imageUrl.isNotEmpty
+                      ? value.imageUrl.first
+                      : null,
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
     );
+  }
+
+  Widget getSpecialProduct() {
+    return GetBuilder<SpecialProductController>(
+      builder: (controller) {
+        return Visibility(
+          visible: controller.isLoading == false,
+          replacement: CenteredCircularProgressIndicator(),
+          child: SizedBox(
+            height: ProductCard.height,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.specialProductList.length,
+              itemBuilder: ((BuildContext context, int index) {
+                var item = controller.specialProductList[index];
+                return ProductCard(
+                  id: item.id,
+                  title: item.name,
+                  price: item.price,
+                  imageUrl: item.imageUrl.first,
+                );
+              }),
+              separatorBuilder: (_, __) => Container(width: 10),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget getNewProduct() {
+    return GetBuilder<NewProductController>(
+      builder: (controller) {
+        return Visibility(
+          visible: controller.isLoading == false,
+          replacement: CenteredCircularProgressIndicator(),
+          child: SizedBox(
+            height: ProductCard.height,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.newProductList.length,
+              itemBuilder: ((BuildContext context, int index) {
+                var item = controller.newProductList[index];
+                return ProductCard(
+                  id: item.id,
+                  title: item.name,
+                  price: item.price,
+                  imageUrl: item.imageUrl.first,
+                );
+              }),
+              separatorBuilder: (_, __) => Container(width: 10),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _onTapToSeeAllCategories() {
+    mainBottomNavController.gotoCategoryScreen();
+  }
+
+  _onTapToSeeAllPopularProduct() {
+    Navigator.pushNamed(context, ProductListScreen.name, arguments: 'Popular');
+  }
+
+  _onTapToSeeAlNewProduct() {
+    Navigator.pushNamed(context, ProductListScreen.name, arguments: 'New');
+  }
+
+  _onTapToSeeAlSpecialProduct() {
+    Navigator.pushNamed(context, ProductListScreen.name, arguments: 'Special');
   }
 }

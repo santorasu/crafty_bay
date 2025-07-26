@@ -6,70 +6,58 @@ class AppTheme {
   static ThemeData get lightThemeData {
     return ThemeData(
       colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: AppColor.getMaterialColor(AppColor.themeColor),
+        primarySwatch: AppColors.themColor,
       ),
       textTheme: _textTheme,
-
-      inputDecorationTheme: InputDecorationTheme(
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-        border: _getInputBorder(AppColor.themeColor),
-        enabledBorder: _getInputBorder(AppColor.themeColor),
-        focusedBorder: _getInputBorder(AppColor.themeColor),
-        errorBorder: _getInputBorder(Colors.red),
-        hintStyle: TextStyle(
-          fontWeight: FontWeight.w400,
-          color: Colors.grey,
-        )
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-            fixedSize: Size.fromWidth(double.maxFinite),
-            backgroundColor: AppColor.themeColor,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: EdgeInsets.symmetric(vertical: 12),
-            textStyle: TextStyle(
-              fontSize: 16,
-              letterSpacing: 0.4,
-              fontWeight: FontWeight.w500,
-            )
-        ),
-      ),
-      appBarTheme: AppBarTheme(
-        titleTextStyle: TextStyle(
-          fontSize: 18,
-          color: Colors.black87,
-        ),
-      )
-    );
-  }
-
-  static OutlineInputBorder _getInputBorder(Color color){
-    return OutlineInputBorder(
-      borderSide: BorderSide(color: color, width: 1.2,),
+      inputDecorationTheme: _inputDecorationTheme,
+      elevatedButtonTheme: _elevatedButtonThemeData,
     );
   }
 
   static TextTheme get _textTheme {
     return TextTheme(
-      titleLarge: TextStyle(
-        fontSize: 28,
-        fontWeight: FontWeight.w600,
-        letterSpacing: .4,
+
+        titleLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.normal),
+        titleMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
+        bodySmall: TextStyle(fontSize: 13, color: Colors.grey),
+        bodyMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis,),
+        labelSmall: TextStyle(fontSize: 11, color: Colors.black),
+
+    );
+  }
+
+  static InputDecorationTheme get _inputDecorationTheme {
+    return InputDecorationTheme(
+      border: OutlineInputBorder(borderSide: _getBorder(AppColors.themColor.shade500)),
+      enabledBorder: OutlineInputBorder(
+        borderSide: _getBorder(AppColors.themColor.shade500),
       ),
-      titleMedium: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        letterSpacing: .4,
+      focusedBorder: OutlineInputBorder(
+        borderSide: _getBorder(AppColors.themColor.shade500),
       ),
-      titleSmall: TextStyle(
-        fontSize: 22,
-        fontWeight: FontWeight.w600,
-        letterSpacing: .4,
+      errorBorder: OutlineInputBorder(borderSide: _getBorder(Colors.red)),
+
+
+      contentPadding: EdgeInsets.all(10),
+      hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),
+    );
+  }
+
+  static BorderSide _getBorder(Color color) {
+    return BorderSide(color: color, width: 2);
+  }
+
+  static ElevatedButtonThemeData get _elevatedButtonThemeData {
+    return ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        fixedSize: Size.fromWidth(double.maxFinite),
+        backgroundColor: AppColors.themColor,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        padding: EdgeInsets.all(12),
+        textStyle: TextStyle(
+            fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w600),
       ),
-      headlineMedium: TextStyle(fontSize: 16, color: Colors.grey),
     );
   }
 }

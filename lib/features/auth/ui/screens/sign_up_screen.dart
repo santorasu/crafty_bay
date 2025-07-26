@@ -1,26 +1,20 @@
 import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
-import 'package:crafty_bay/core/ui/widgets/snack_bar_message.dart';
-import 'package:crafty_bay/features/auth/data/models/sign_up_request_model.dart';
-import 'package:crafty_bay/features/auth/ui/controller/sign_up_controller.dart';
-import 'package:crafty_bay/features/auth/ui/screens/verify_otp_screen.dart';
-import 'package:crafty_bay/features/auth/ui/widgets/app_logo.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import '../../data/models/sign_up_request_model.dart';
+import '../controller/registration_controller.dart';
 
-import 'login_screen.dart';
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
-
-  static final String name = '/sign-up';
+  static final name = 'register';
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -29,31 +23,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final SignUpController _signUpController = Get.find<SignUpController>();
+  final TextEditingController _shippingAddressTEController =
+      TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+        body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: SingleChildScrollView(
             child: Form(
               key: _formKey,
-              autovalidateMode: AutovalidateMode.onUnfocus,
               child: Column(
                 children: [
-                  AppLogo(width: 90, height: 90),
-                  SizedBox(height: 16),
+                  SizedBox(height: MediaQuery.of(context).size.height / 20),
                   Text('Register Account', style: textTheme.titleLarge),
                   SizedBox(height: 4),
                   Text(
                     'Please enter your details to sign up',
                     style: textTheme.headlineMedium,
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -67,8 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-
-                  SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   TextFormField(
                     controller: _firstNameController,
                     textInputAction: TextInputAction.next,
@@ -80,8 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-
-                  SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   TextFormField(
                     controller: _lastNameController,
                     textInputAction: TextInputAction.next,
@@ -93,21 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-
-                  SizedBox(height: 8),
-                  TextFormField(
-                    controller: _mobileController,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(hintText: "Mobile Number"),
-                    validator: (String? value) {
-                      if (value?.trim().isEmpty ?? true) {
-                        return 'Enter a valid Mobile Number';
-                      }
-                      return null;
-                    },
-                  ),
-
-                  SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   TextFormField(
                     controller: _passwordController,
                     textInputAction: TextInputAction.next,
@@ -120,7 +97,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _mobileController,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(hintText: "Mobile Number"),
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter a valid Mobile Number';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: _cityController,
                     textInputAction: TextInputAction.next,
@@ -133,47 +122,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
 
-                  SizedBox(height: 8),
-                  TextFormField(
-                    controller: _addressController,
-                    textInputAction: TextInputAction.done,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(16),
-                      hintText: "Shipping Address",
-                    ),
-                    validator: (String? value) {
-                      if (value?.trim().isEmpty ?? true) {
-                        return 'Enter a Shipping Address';
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: _onTapSignup,
+                    child: GetBuilder<RegistrationController>(
+                      builder: (controller) {
+                        return Visibility(
+                            visible: Get.find<RegistrationController>().isLoading == false,
+                            replacement: CenteredCircularProgressIndicator(),
+                            child: Text('SignUp'));
                       }
-                      return null;
-                    },
+                    ),
                   ),
-                  SizedBox(height: 16),
-                  GetBuilder<SignUpController>(
-                    builder: (_) {
-                      return Visibility(
-                        visible: _signUpController.inProgress == false,
-                        replacement: CenteredCircularProgressIndicator(),
-                        child: ElevatedButton(
-                          onPressed: _onTapSignUpButton,
-                          child: Text('Sign Up'),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Already have an account?"),
-                      TextButton(
-                        onPressed: _onTabLoginButton,
-                        child: Text('Login'),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 32),
                 ],
               ),
             ),
@@ -183,36 +143,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _onTabLoginButton() {
-    Navigator.pop(context);
-  }
-
-  Future<void> _onTapSignUpButton() async {
+  _onTapSignup() async {
+    var registrationInfo = RegistrationRequestModel(
+      email: _emailController.text.trim(),
+      firstName: _firstNameController.text.trim(),
+      lastName: _lastNameController.text.trim(),
+      password: _lastNameController.text,
+      city: _shippingAddressTEController.text.trim(),
+      mobile: _mobileController.text.trim(),
+    );
     if (_formKey.currentState!.validate()) {
-      final SignUpRequestModel model = SignUpRequestModel(
-        email: _emailController.text.trim(),
-        firstName: _firstNameController.text.trim(),
-        lastName: _lastNameController.text.trim(),
-        phone: _mobileController.text.trim(),
-        password: _passwordController.text,
-        city: _cityController.text.trim(),
-      );
-      final bool isSuccess = await _signUpController.signUp(model);
-      if (isSuccess) {
-        Navigator.pushNamed(
-          context,
-          VerifyOtpScreen.name,
-          arguments: _emailController.text.trim(),
-        );
-        showSnackBarMessage(context, _signUpController.message);
-      } else {
-        showSnackBarMessage(context, _signUpController.errorMessage!, true);
-      }
+       await Get.find<RegistrationController>().registration(registrationInfo);
+
     }
   }
 
+
   @override
   void dispose() {
+    super.dispose();
     _emailController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -220,6 +169,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _cityController.dispose();
     _addressController.dispose();
     _passwordController.dispose();
-    super.dispose();
+    _shippingAddressTEController.dispose();
   }
 }

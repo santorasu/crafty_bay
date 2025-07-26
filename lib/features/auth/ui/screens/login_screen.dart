@@ -1,19 +1,15 @@
 import 'package:crafty_bay/core/ui/widgets/centered_circular_progress_indicator.dart';
-import 'package:crafty_bay/features/auth/data/models/login_request_model.dart';
-import 'package:crafty_bay/features/auth/ui/controller/login_controller.dart';
 import 'package:crafty_bay/features/auth/ui/screens/sign_up_screen.dart';
-import 'package:crafty_bay/features/auth/ui/widgets/app_logo.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../../core/ui/widgets/snack_bar_message.dart';
-import '../../../common/ui/screens/main_bottom_nav_screen.dart';
+import '../controller/login_controller.dart';
+import '../widgets/app_logo.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
-  static final String name = '/login';
+  static final name = 'login';
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -23,17 +19,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final LoginController _loginController = Get.find<LoginController>();
 
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+        body: Padding(
+          padding: const EdgeInsets.all(10),
+          child: SingleChildScrollView(
             child: Form(
               key: _formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -42,11 +36,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 44),
                   AppLogo(width: 90, height: 90),
                   SizedBox(height: 16),
-                  Text('Welcome Back', style: textTheme.titleLarge),
-                  SizedBox(height: 4),
-                  Text(
-                    'Please enter your email & password',
-                    style: textTheme.headlineMedium,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Welcome Back', style: textTheme.titleLarge),
+                      SizedBox(height: 4),
+                      Text(
+                        'Please enter your email & password',
+                        style: textTheme.headlineMedium,
+                      ),
+                    ],
                   ),
                   SizedBox(height: 24),
                   TextFormField(
@@ -62,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-
+                  const SizedBox(height: 10),
                   SizedBox(height: 8),
                   TextFormField(
                     controller: _passwordController,
@@ -80,23 +79,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   GetBuilder<LoginController>(
                     builder: (controller) {
                       return Visibility(
-                        visible: controller.inProgress == false,
+                        visible: controller.isLoading == false,
                         replacement: CenteredCircularProgressIndicator(),
                         child: ElevatedButton(
-                          onPressed: _onTapLoginButton,
+                          onPressed: _onTapLogIn,
                           child: Text('Login'),
                         ),
                       );
                     },
                   ),
                   SizedBox(height: 16),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Don't have an account?"),
+                      Text('Don\'t have an account?'),
+                      SizedBox(width: 4),
                       TextButton(
                         onPressed: _onTapSignUpButton,
-                        child: Text('Sign Up'),
+                        child: Text('Sign UP'),
                       ),
                     ],
                   ),
@@ -109,34 +110,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _onTapSignUpButton() {
-    Navigator.pushNamed(context, SignUpScreen.name);
-  }
-
-  Future<void> _onTapLoginButton() async {
+  _onTapLogIn() async {
     if (_formKey.currentState!.validate()) {
-      LoginRequestModel model = LoginRequestModel(
+      await Get.find<LoginController>().login(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      final bool isSuccess = await _loginController.login(model);
-      if (isSuccess) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          MainBottomNavScreen.name,
-          (predicate) => false,
-        );
-      } else {
-        // Show error
-        showSnackBarMessage(context, _loginController.errorMessage!, true);
-      }
     }
   }
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  _onTapSignUpButton() {
+    Navigator.pushNamed(context, RegisterScreen.name);
   }
 }

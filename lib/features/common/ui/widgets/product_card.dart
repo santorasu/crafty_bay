@@ -1,112 +1,113 @@
-import 'package:crafty_bay/features/products/ui/screens/product_details_screen.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../app/app_colors.dart';
-import '../../../../app/asset_paths.dart';
-import '../../../../app/constants.dart';
-import '../../models/product_model.dart';
+import '../../../../app/assets_path.dart';
+import '../../../products/ui/screens/product_details_screen.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key, required this.productModel});
+  const ProductCard({
+    required this.id,
+    this.title,
+    this.price,
+    this.rating,
+    this.imageUrl,
+    super.key,
+  });
 
-  final ProductModel productModel;
+  static const height = 170.0;
+
+  final String? title;
+  final String? rating;
+  final int? price;
+  final String? imageUrl;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          ProductDetailsScreen.name,
-          arguments: productModel.id,
-        );
-      },
+      onTap: () => Navigator.pushNamed(context, ProductDetailScreen.name,arguments: id),
       child: Container(
-        width: 140,
-        margin: EdgeInsets.all(2),
+        width: 120,
+        height: height,
+        margin: EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: AppColor.themeColor.withOpacity(0.2),
-              offset: Offset(0.0, 0.7),
-              blurRadius: 5,
+              color: Colors.black.withOpacity(0.5),
+              blurRadius: 2,
+              offset: const Offset(0, 0.5),
             ),
           ],
         ),
+
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 140,
               decoration: BoxDecoration(
-                color: AppColor.themeColor.withOpacity(0.1),
+                color: AppColors.themColor.shade100,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
                 ),
               ),
-              padding: EdgeInsets.all(16),
-              child: Image.network(
-                productModel.photoUrls.first,
-                height: 80,
-                width: 80,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Image.asset(
-                    AssetPaths.dummyNikeShoePng,
-                    height: 80,
-                    width: 80,
-                    fit: BoxFit.cover,
-                  );
-                },
-              )
-              ,
+              child:
+                  imageUrl != null
+                      ? ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          topLeft: Radius.circular(10),
+                        ),
+                        child: Image.network(
+                          imageUrl!,
+                          height: 100,
+                          width: 120,
+                          fit: BoxFit.fill,
+                        ),
+                      )
+                      : Image.asset(AssetsPath.productImagePng, height: 100),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.only(bottom: 4, left: 4, right: 4),
               child: Column(
                 children: [
                   Text(
-                    productModel.title,
-                    maxLines: 1,
+                    title ?? 'Nike special for new year',
                     style: TextStyle(
                       overflow: TextOverflow.ellipsis,
                       color: Colors.black54,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${Constants.takaSign}${productModel.currentPrice}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppColor.themeColor,
-                        ),
+                        "${price.toString()}৳",
+                        style: TextTheme.of(context).labelSmall,
                       ),
                       Wrap(
                         children: [
-                          Icon(Icons.star, color: Colors.amber, size: 18),
-                          Text('4.5', style: TextStyle(color: Colors.grey)),
+                          Icon(Icons.star, color: Colors.amber, size: 15),
+                          Text(
+                            rating ?? '4.7',
+                            style: TextTheme.of(context).labelSmall,
+                          ),
                         ],
                       ),
-                      Card(
-                        color: AppColor.themeColor,
-                        shape: RoundedRectangleBorder(
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.themColor,
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: Icon(
-                            Icons.favorite_outline_rounded,
-                            size: 18,
-                            color: Colors.white,
-                          ),
+                        padding: EdgeInsets.all(2),
+                        child: Icon(
+                          Icons.favorite_border,
+                          size: 15,
+                          color: Colors.white,
                         ),
                       ),
+                      SizedBox(width: 3),
                     ],
                   ),
                 ],
